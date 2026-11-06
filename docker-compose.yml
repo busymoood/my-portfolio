@@ -34,7 +34,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: my-portfolio/web:latest
+    # Same tag as the CI build: local `docker compose build` and the published
+    # image stay interchangeable. The target pulls this from GHCR.
+    image: ghcr.io/busymoood/my-portfolio:latest
     restart: unless-stopped
     profiles: ["prod"]
 
