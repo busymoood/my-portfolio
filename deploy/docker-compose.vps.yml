@@ -1,0 +1,33 @@
+# myPortfolio — déploiement du site sur un VPS.
+#
+# Cette stack ne contient que le site (image publiée sur GHCR) et,
+# optionnellement, le tunnel Cloudflare. Aucun volume, aucun build : la
+# machine tire l'image et exécute nginx.
+#
+# Usage :
+#   docker compose -f deploy/docker-compose.vps.yml pull
+#   docker compose -f deploy/docker-compose.vps.yml up -d --no-build
+#
+#   # avec le tunnel Cloudflare géré par cette stack :
+#   docker compose -f deploy/docker-compose.vps.yml --profile tunnel up -d
+#
+# Variables (uniquement avec --profile tunnel) :
+#   TUNNEL_TOKEN=<jeton du tunnel>   # via --env-file deploy/.env ou l'environnement
+
+name: my-portfolio
+
+services:
+  web:
+    image: ghcr.io/busymoood/my-portfolio:latest
+    restart: unless-stopped
+
+  # Optionnel : à activer avec `--profile tunnel` si le VPS n'a pas déjà
+  # un cloudflared géré séparément. L'ingress du tunnel doit pointer vers
+  # http://web:80 (réseau Docker de cette stack).
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    depends_on:
+      - web
+    profiles: ["tunnel"]

@@ -1,15 +1,19 @@
-# myPortfolio — services du site
+# myPortfolio — environnement de développement (dev container)
+#
+# Ce fichier ne sert QU'AU développement local : il construit l'image du
+# devcontainer (LaTeX + Node + nvim + lazygit + opencode) et monte les configs
+# de l'hôte.
+#
+# Le déploiement du site sur un VPS vit dans deploy/docker-compose.vps.yml.
+#
 # Usage :
-#   docker compose --profile dev up -d    → conteneur de dev (scripting agentique)
-#   docker compose --profile prod up -d   → site web + tunnel cloudflared (VPS)
-# Variables d'environnement attendues (fichier .env non commité) :
-#   TUNNEL_TOKEN=<jeton du tunnel Cloudflare>
-name: my-portfolio
+#   docker compose up -d --build     → construit et démarre le conteneur
+#   docker compose exec dev bash     → entre dans le conteneur
+#   docker compose build dev         → rebuild après modification du Dockerfile
+
+name: my-portfolio-dev
 
 services:
-  # ---- Environnement de développement normé (agents OpenCode, humains) ----
-# Utilise la MÊME image que .devcontainer (LaTeX + Node + nvim + lazygit + opencode)
-# et monte les MÊMES configs hôtes (nvim/LazyVim, lazygit, OpenCode).
   dev:
     build:
       context: .
@@ -27,24 +31,3 @@ services:
       - ~/.config/opencode:/home/dev/.config/opencode
       - ~/.local/share/opencode:/home/dev/.local/share/opencode
     command: sleep infinity
-    profiles: ["dev"]
-
-  # ---- Site statique (production) ----
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    # Same tag as the CI build: local `docker compose build` and the published
-    # image stay interchangeable. The target pulls this from GHCR.
-    image: ghcr.io/busymoood/my-portfolio:latest
-    restart: unless-stopped
-    profiles: ["prod"]
-
-  # ---- Tunnel Cloudflare : relie web au réseau Cloudflare, aucun port public ----
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
-    profiles: ["prod"]
-    depends_on:
-      - web
