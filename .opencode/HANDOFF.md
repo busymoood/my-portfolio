@@ -6,9 +6,11 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
 
 ## Où tu en es
 
-- **Spécifications** : v0.4 validées — voir la spec du projet (CV + portfolio
-  + blog, bilingue EN défaut `/` + FR `/fr/`, thème terminal propre façon
-  NeoVim, Astro statique, Docker + Cloudflare Tunnel).
+- **Spécifications** : v0.4 validées, versionnées dans le repo — **`docs/spec.md`**
+  (CV + portfolio + blog, bilingue EN défaut `/` + FR `/fr/`, thème terminal
+  propre façon NeoVim, Astro statique, Docker + Cloudflare Tunnel).
+  **La table « État du projet » en tête de la spec fait foi sur l'avancement** ;
+  la mettre à jour à chaque fin de phase.
 - **Phase 0 réalisée et committée** (init git local, branche `main`, pas de
   remote — le repo distant sera créé par Julien sous le nom `myPortfolio`).
 - **Existant hérité de l'ancien repo CV** : `latex/my_cv.tex` (CV EN, template

@@ -4,7 +4,8 @@ Site personnel : **CV + portfolio de projets + blog**, en anglais (défaut, raci
 et français (`/fr/`). Public cible : recruteurs ET pairs. Style : « terminal propre »
 inspiré des thèmes NeoVim (fond sombre, mono pour les accents, sobre).
 
-Spécifications complètes : voir la spec du projet (tenue à jour au fil des phases).
+Spécifications complètes : **`docs/spec.md`** (versionnée avec le repo, tenue à
+jour au fil des phases — la table « État du projet » en tête fait foi).
 **Agent qui démarre ici : lire d'abord `.opencode/HANDOFF.md`.**
 
 ## Structure du repo
