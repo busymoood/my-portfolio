@@ -5,6 +5,7 @@ et français (`/fr/`). Public cible : recruteurs ET pairs. Style : « terminal p
 inspiré des thèmes NeoVim (fond sombre, mono pour les accents, sobre).
 
 Spécifications complètes : voir la spec du projet (tenue à jour au fil des phases).
+**Agent qui démarre ici : lire d'abord `.opencode/HANDOFF.md`.**
 
 ## Structure du repo
 

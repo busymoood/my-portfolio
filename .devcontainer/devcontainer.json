@@ -6,6 +6,17 @@
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "overrideCommand": true,
+  "remoteUser": "vscode",
+  // Configs hôtes montées dans le conteneur :
+  // nvim (config + plugins LazyVim) — lazygit — OpenCode (config + état/auth)
+  "mounts": [
+    "source=${localEnv:HOME}/.config/nvim,target=/home/vscode/.config/nvim,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.local/share/nvim,target=/home/vscode/.local/share/nvim,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/lazygit,target=/home/vscode/.config/lazygit,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind,consistency=cached"
+  ],
+  "forwardPorts": [4321],
   "customizations": {
     "vscode": {
       "extensions": [

@@ -8,14 +8,21 @@ name: my-cv
 
 services:
   # ---- Environnement de développement normé (agents OpenCode, humains) ----
-# Utilise la MÊME image que .devcontainer (LaTeX today ; Node via Astro en Phase 1)
+# Utilise la MÊME image que .devcontainer (LaTeX + Node + nvim + lazygit + opencode)
+# et monte les MÊMES configs hôtes (nvim/LazyVim, lazygit, OpenCode).
   dev:
     build:
       context: .
       dockerfile: .devcontainer/Dockerfile
     working_dir: /workspace
+    user: vscode
     volumes:
       - .:/workspace
+      - ~/.config/nvim:/home/vscode/.config/nvim
+      - ~/.local/share/nvim:/home/vscode/.local/share/nvim
+      - ~/.config/lazygit:/home/vscode/.config/lazygit
+      - ~/.config/opencode:/home/vscode/.config/opencode
+      - ~/.local/share/opencode:/home/vscode/.local/share/opencode
     command: sleep infinity
     profiles: ["dev"]
 
