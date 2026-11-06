@@ -15,7 +15,8 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
   remote — le repo distant sera créé par Julien sous le nom `myPortfolio`).
 - **Existant hérité de l'ancien repo CV** : `latex/my_cv.tex` (CV EN, template
   Harshibar MIT), `.github/workflows/deploy-pdf.yml` (CI : build PDF → GitHub
-  Release tag `cv-<n>`), `.vscode/tasks.json` (latexmk), `.devcontainer/` (tu
+  Release tag `cv-<n>`), `latex/Makefile` (build/watch/clean latexmk),
+  `.devcontainer/` (tu
   y es).
 
 ## Environnement du container (tu y es)

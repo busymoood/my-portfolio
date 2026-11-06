@@ -26,7 +26,7 @@ public/pdf/                 # PDF du CV (téléchargé de la Release en CI, jama
 .opencode/                  # config OpenCode, skills (skill-creator…), commands
 .devcontainer/
   devcontainer.json Dockerfile
-.vscode/tasks.json          # build/watch/clean latexmk
+latex/Makefile             # build/watch/clean latexmk
 Dockerfile nginx.conf docker-compose.yml   # site : build + runtime + tunnel
 ```
 
