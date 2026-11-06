@@ -19,11 +19,17 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
 ## Environnement du container (tu y es)
 
 - Ubuntu 24.04 + **Node LTS 22** + Python 3 (scripts des skills) + toolchain
-  **LaTeX/latexmk** + **neovim** (stable) + **lazygit** + **opencode** (npm).
+  **LaTeX/latexmk** + **neovim** (dernière stable) + **lazygit** (latest au build)
+  + **opencode** (npm `@latest`).
+- **Outils agent** : **CLI Docker** (via socket hôte monté — tu peux builder
+  l'image du site), **gh** (GitHub CLI : Releases du PDF, estado de la CI),
+  **jq**, **Playwright + Chromium** (browsers partagés dans /opt/ms-playwright
+  — pour la skill `webapp-testing` et les audits Phase 5).
 - Configs montées depuis l'hôte : `~/.config/nvim` + `~/.local/share/nvim`
   (LazyVim de Julien), `~/.config/lazygit`, OpenCode `~/.config/opencode` +
-  `~/.local/share/opencode` (auth à l'hôte).
-- Outils : `nvim`, `lazygit`, `opencode`, `latexmk`, `node`, `npm`.
+  `~/.local/share/opencode` (auth de l'hôte).
+- Outils en ligne : `nvim`, `lazygit`, `opencode`, `latexmk`, `node`, `npm`,
+  `python3`, `playwright`, `gh`, `docker`, `jq`.
 
 ## Ce qui t'attend : la Phase 1 « Squelette »
 

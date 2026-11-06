@@ -18,6 +18,7 @@ services:
     user: vscode
     volumes:
       - .:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
       - ~/.config/nvim:/home/vscode/.config/nvim
       - ~/.local/share/nvim:/home/vscode/.local/share/nvim
       - ~/.config/lazygit:/home/vscode/.config/lazygit

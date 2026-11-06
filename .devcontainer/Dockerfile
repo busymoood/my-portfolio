@@ -17,9 +17,15 @@ RUN apt-get update \
 
 # ---- Node.js LTS 22 (build du site, Phase 1) ----
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-	&& apt-get install -y --no-install-recommends nodejs \
+	&& apt-get install -y --no-install-recommends nodejs jq \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
+
+# ---- Playwright (audits web, skill webapp-testing / Phase 5) ----
+# Browsers partagés dans /opt (généré au build, utilisable par vscode)
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
+RUN python3 -m pip install --no-cache-dir --break-system-packages playwright \
+	&& playwright install --with-deps chromium
 
 # ---- Neovim (dernière release stable au moment du build) ----
 RUN curl -fsSL -o /tmp/nvim.tar.gz \

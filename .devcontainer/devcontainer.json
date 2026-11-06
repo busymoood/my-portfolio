@@ -4,6 +4,11 @@
     "dockerfile": "./Dockerfile",
     "context": "."
   },
+  // Features : CLI Docker (via socket de l'hôte) + GitHub CLI
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "overrideCommand": true,
   "remoteUser": "vscode",
