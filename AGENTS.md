@@ -27,7 +27,9 @@ public/pdf/                 # PDF du CV (téléchargé de la Release en CI, jama
 .devcontainer/
   devcontainer.json Dockerfile
 latex/Makefile             # build/watch/clean latexmk
-Dockerfile nginx.conf docker-compose.yml   # site : build + runtime + tunnel
+Dockerfile nginx.conf                      # site : build + runtime
+docker-compose.yml                         # dev container local
+deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR + tunnel optionnel)
 ```
 
 ## Règles de contenu (non négociables)
@@ -71,7 +73,7 @@ Dockerfile nginx.conf docker-compose.yml   # site : build + runtime + tunnel
 ## Ce qu'un agent ne touche pas sans validation
 
 - `.github/workflows/` (CI : PDF du CV, image du site, déploiement),
-- `docker-compose.yml` (services cloudflared/web prod), `Dockerfile`, `nginx.conf`
+- `docker-compose.yml`, `deploy/docker-compose.vps.yml` (déploiement), `Dockerfile`, `nginx.conf`
   — jeton de tunnel, secrets, configuration réseau.
 - Tout `.env` (jamais commité par ailleurs : `.gitignore`).
 - Les conventions de ce fichier — proposer les changements dans la conversation.
