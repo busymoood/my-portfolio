@@ -35,6 +35,10 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
 
 ## Ce qui t'attend : la Phase 1 « Squelette »
 
+**Statut : réalisée (voir la table d'état de `docs/spec.md`).** Les pages, layouts,
+tokens, collections et contenus factices sont en place ; la Phase 2 démarre ci-dessous.
+Historique de ce que la Phase 1 devait couvrir, si besoin de comprendre le squelette :
+
 Objectif : site Astro navigable avec contenus factices, build vert.
 
 1. `npm create astro@latest . -- --template minimal` (ou écrire les fichiers à

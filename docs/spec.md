@@ -8,7 +8,7 @@
 | Phase | État | Détail |
 |---|---|---|
 | 0 — Atelier agentique | ✅ Réalisée | Init git local (`main`, sans remote), devcontainer + `.opencode/` (skills, commands, AGENTS.md), CI PDF existante migrée |
-| 1 — Squelette | ⏳ À faire | Site Astro navigable, contenus factices, `/check` vert |
+| 1 — Squelette | ✅ Réalisée | Astro navigable bilingue (`/` + `/fr/`), pages `cv`/`projects`/`blog`/`404`, layouts + design tokens Kanagawa, collections zod strictes, contenus factices (2 projets placeholder + 2 billets brouillon), lint + build verts |
 | 2 — Contenus réels | ⏳ À faire | CV LaTeX enrichi + 3 fiches projet (relic-core, relic-hw, Ovalbot) |
 | 3 — Blog | ⏳ À faire | Collections Markdown, index vide propre, gabarit billet |
 | 4 — Infra | ⏳ À faire | Dockerfile multi-stage, compose + cloudflared, CI GHCR + deploy |
