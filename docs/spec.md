@@ -11,7 +11,7 @@
 | 1 — Squelette | ✅ Réalisée | Astro navigable bilingue (`/` + `/fr/`), pages `cv`/`projects`/`blog`/`404`, layouts + design tokens Kanagawa, collections zod strictes, contenus factices (2 projets placeholder + 2 billets brouillon), lint + build verts |
 | 2 — Contenus réels | ✅ Réalisée | 3 fiches EN (relic-core, Ovalbot, Relic Hardware Guide) avec couvertures 16:9 dark, ordre éditorial sur `/projects`, repli « traduction à venir » sur `/fr` ; CV LaTeX conservé tel quel (pas de variante FR) |
 | 3 — Blog | ✅ Réalisée | Billets routés par langue (une URL par billet), brouillons exclus du build de production (404 en prod, visibles en dev), extraits dans l'index, état vide et repli inter-langue ; blog vide au lancement |
-| 4 — Infra | ✅ Réalisée | `site.yml` : lint, build **amd64 + arm64** sur runners natifs, smoke test avant publication, merge du manifeste et push GHCR (package public) ; PDF téléchargé de la dernière Release `cv-*` (repli si absente) ; page `/cv` sans lien mort ; compose aligné sur l'image publiée. Pas de job de déploiement : la cible tire l'image et gère son tunnel. |
+| 4 — Infra | ✅ Réalisée | `site.yml` : lint, build **amd64 + arm64** sur runners natifs, smoke test avant publication, merge du manifeste et push GHCR (package public) ; PDF téléchargé de la dernière Release `cv-*` (repli si absente) ; page `/cv` sans lien mort ; compose aligné sur l'image publiée et raccordé au réseau du tunnel Cloudflare existant. Pas de job de déploiement : la cible tire l'image, le tunnel est géré hors de cette stack. |
 | 5 — Qualité & lancement | ⏳ À faire | Audits, 404, sitemap, tunnel en prod, DNS `ficaud.xyz` |
 
 Remote : `busymoood/my-portfolio` (origine existante conservée). Voir §7 pour le détail des phases.
@@ -193,8 +193,8 @@ Textes d'interface (labels de nav, « Voir mon CV », etc.) dans des fichiers de
 **Containerisation**
 - **`Dockerfile` multi-stage** : build (Node → `astro build`) puis exécution minimale (`nginx:alpine`) servant les fichiers statiques. Image finale de quelques Mo.
 - **`docker-compose.yml`** à la racine : **dev container uniquement** (service `dev`), montages des configs hôte.
-- **`deploy/docker-compose.vps.yml`** : déploiement sur VPS — service `web` (image publiée sur GHCR) et `cloudflared` **optionnel** (profil `tunnel`). Aucun volume, aucun build côté serveur.
-- **`cloudflared`** (tunnel Cloudflare) : relie le site au réseau Cloudflare sans ouvrir de port public ; HTTPS géré par le bord Cloudflare. Aucun reverse proxy TLS à maintenir côté serveur.
+- **`deploy/docker-compose.vps.yml`** : déploiement sur VPS — service `web` (image publiée sur GHCR) raccordé au **réseau Docker du tunnel Cloudflare existant** (`TUNNEL_NETWORK`), joignable via `http://portfolio-web:80`. Aucun volume, aucun build, aucun port public, aucun jeton dans cette stack.
+- **`cloudflared`** : un seul connecteur, géré **hors de cette stack** (compose Cloudflare du VPS) ; il expose le site via un public hostname. HTTPS géré au bord Cloudflare, aucun reverse proxy TLS à maintenir côté serveur.
 - **Domaine : `ficaud.xyz`** (racine) via Cloudflare DNS () ; redirection `www.` → apex à gérer côté Cloudflare.
 - **`devcontainer.json`** : Node LTS + Astro extensions éditoriales ; un coup de `docker compose up` sur la cible `dev` et le site tourne localement en mode dev.
 
@@ -215,7 +215,7 @@ myPortfolio/               # nouveau repo (init local fait, remote à créer)
 ├── devcontainer.json      # dérivé du .devcontainer LaTeX existant (Node en Phase 1)
 ├── docker-compose.yml     # dev container local
 ├── deploy/
-│   ├── docker-compose.vps.yml   # VPS : image GHCR + cloudflared optionnel
+│   ├── docker-compose.vps.yml   # VPS : image GHCR, réseau du tunnel existant
 │   └── README.md
 ├── Dockerfile / nginx.conf
 ├── .opencode/             # skills + commands + AGENTS.md
@@ -271,7 +271,7 @@ myPortfolio/               # nouveau repo (init local fait, remote à créer)
 | **1. Squelette** | Layouts, navigation, design tokens (palette, polices, dark), pages vides mais routées | Site navigable avec contenus factices, `/check` vert |
 | **2. Contenus réels** | CV LaTeX enrichi + **3 à 5 fiches projet réelles** | `/cv` et `/projects` à contenu réel (PDF compilé en CI) |
 | **3. Blog** | Collections Markdown, index avec état vide propre, gabarit de billet | Un billet de test en brouillon fonctionne de bout en bout |
-| **4. Infra** | Dockerfile multi-stage, compose + cloudflared, CI multi-arch (GHCR), PDF du CV | Image amd64/arm64 publiée sur GHCR et pullable ; la cible déploie via son compose (tunnel géré côté cible) |
+| **4. Infra** | Dockerfile multi-stage, compose VPS raccordé au réseau du tunnel existant, CI multi-arch (GHCR), PDF du CV | Image amd64/arm64 publiée sur GHCR et pullable ; la cible déploie via son compose, le tunnel Cloudflare reste hors de la stack |
 | **5. Qualité & lancement** | Audit responsive/mobile, accessibilité, Lighthouse, 404, sitemap, tunnel en prod, DNS | Site en production, checklist finale verte |
 
 **Règle d'or** : chaque phase se termine par un état déployable — « `docker compose up` local + `/check` vert » à chaque jalon, et la CI de déploiement branchée dès la phase 1 (l'image existe tôt, le site reste publiable en continu).

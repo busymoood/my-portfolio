@@ -135,13 +135,17 @@ PDF fraîchement publié.
 
 ### Déploiement VPS
 
-La CI ne déploie pas. Le VPS tire l'image et exécute sa stack :
-voir **[`deploy/README.md`](deploy/README.md)**.
+La CI ne déploie pas. Le VPS tire l'image et la raccorde au réseau Docker du
+tunnel Cloudflare existant : voir **[`deploy/README.md`](deploy/README.md)**.
 
 ```sh
+export TUNNEL_NETWORK=cloudflared_default   # réseau du compose cloudflared
 docker compose -f deploy/docker-compose.vps.yml pull
 docker compose -f deploy/docker-compose.vps.yml up -d --no-build
 ```
+
+Dans Cloudflare, le public hostname pointe vers `http://portfolio-web:80`.
+Aucun port n'est exposé sur le VPS, et aucun `TUNNEL_TOKEN` n'est nécessaire.
 
 ## Conventions & ce qui est automatique
 
