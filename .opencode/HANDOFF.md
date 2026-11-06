@@ -56,6 +56,34 @@ Objectif : site Astro navigable avec contenus factices, build vert.
 - Un frontmatter invalide doit casser le build avec un message CLAIR (zod) —
   c'est voulu, c'est ce qui rend le pipeline agentique fiable.
 
+## La matière de la Phase 2 : les 3 projets du portfolio
+
+Les fiches portfolio seront créées avec `/add-project`. Seed validé par Julien —
+à approfondir en lisant chaque repo (README complet, `doc/`, CHANGELOG, workflows,
+historique git) AVANT d'écrire la fiche. Rédaction **EN**, description détaillée,
+pas de paraphrase naïve du README :
+
+1. **`github.com/ficaud/relic-core`** — Firmware ESP32 (Zephyr RTOS v4.5, C) :
+   *Shamir's Secret Sharing* GF(2⁸), 3-de-5 parts, 100 % offline (AP Wi-Fi +
+   portail web captif), QR codes (génération Nayuki réduite + décodage via ses
+   forks `relic-quirc` / `relic-zxing-cpp`), web flasher navigateur, démo WASM
+   sur GitHub Pages. CI build + coverage. 201 commits, GPL-3.0.
+   Demo : `https://ficaud.github.io/relic-core/`
+2. **`github.com/ficaud/relic-hw`** — Docs MkDocs (GitHub Pages) : guide pas-à-pas
+   pour débutants construisant le boîtier Relic physique. **Lien croisé** avec la
+   fiche relic-core. Python/MkDocs + CI Pages. 54 commits.
+   Demo : `https://ficaud.github.io/relic-hw`
+3. **`github.com/ficaud/Ovalbot`** — App production en service sur Raspberry Pi
+   arm64 : Rust/Axum + SvelteKit + SQLite. Surveille le TOP14 (dates de matchs +
+   revente), notifie via Resend + bot Telegram, coffre de credentials boutique
+   (AES-256-GCM/HKDF), scanner/checkout en Phases, waitlist à 10 personnes.
+   Multi-arch arm64/amd64. 135 commits, CI ci/deploy + codecov. GPL-3.0.
+   Demo : `https://ovalbot.ficaud.xyz/`
+
+Captures 16:9 dark mode : les projets embarquent des images (doc/img/, frontend
+static) et les démos en ligne sont visibles — capturer soi-même plutôt que de
+stocker à la hâte.
+
 ## Comment vérifier ton travail
 
 Command OpenCode `/check` (dans `.opencode/commands/check.md`) : lint +
