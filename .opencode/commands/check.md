@@ -2,7 +2,7 @@
 description: Valider le projet (lint, schémas de contenu, build)
 agent: build
 ---
-Vérifie la santé du projet my-cv et rapporte précisément ce qui est cassé.
+Vérifie la santé du projet myPortfolio et rapporte précisément ce qui est cassé.
 
 Étapes à exécuter (macOS hôte OU conteneur dev selon l'environnement courant) :
 1. Si `package.json` et `node_modules` existent : `npm run lint` (si présent,

@@ -10,7 +10,7 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
   + blog, bilingue EN défaut `/` + FR `/fr/`, thème terminal propre façon
   NeoVim, Astro statique, Docker + Cloudflare Tunnel).
 - **Phase 0 réalisée et committée** (init git local, branche `main`, pas de
-  remote — le repo distant sera créé par Julien sous un nom genre `myPortfolio`).
+  remote — le repo distant sera créé par Julien sous le nom `myPortfolio`).
 - **Existant hérité de l'ancien repo CV** : `latex/my_cv.tex` (CV EN, template
   Harshibar MIT), `.github/workflows/deploy-pdf.yml` (CI : build PDF → GitHub
   Release tag `cv-<n>`), `.vscode/tasks.json` (latexmk), `.devcontainer/` (tu

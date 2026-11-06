@@ -1,5 +1,5 @@
 {
-  "name": "cv-latex-dev",
+  "name": "myportfolio-dev",
   "build": {
     "dockerfile": "./Dockerfile",
     "context": "."

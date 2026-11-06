@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  // Configuration projet my-cv.
+  // Configuration projet myPortfolio.
   // Les skills sont découverts automatiquement dans .opencode/skills/
   // Les commands sont découverts automatiquement dans .opencode/commands/
   // À compléter au fil du projet (permissions, éventuels MCP) — ne pas deviner

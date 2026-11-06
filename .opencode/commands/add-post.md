@@ -1,7 +1,7 @@
 ---
 description: Créer un nouveau billet de blog (brouillon par défaut)
 ---
-Crée un nouveau billet de blog pour le site my-cv.
+Crée un nouveau billet de blog pour le site myPortfolio.
 
 Sujet : $ARGUMENTS
 

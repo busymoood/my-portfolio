@@ -1,7 +1,7 @@
 ---
 description: Scaffold un nouveau projet dans le portfolio
 ---
-Crée une nouvelle fiche projet pour le portfolio du site my-cv.
+Crée une nouvelle fiche projet pour le portfolio du site myPortfolio.
 
 Infos fournies : $ARGUMENTS
 
