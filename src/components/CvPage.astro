@@ -1,4 +1,5 @@
 ---
+import { existsSync } from 'node:fs';
 import { useTranslations, type Lang } from '../i18n/ui';
 import PageIntro from '../components/PageIntro.astro';
 
@@ -8,6 +9,11 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+// The PDF is downloaded from the latest `cv-*` Release by the site CI into
+// public/pdf/ before `astro build`. When no Release exists yet, the button
+// would be a dead link: show a note instead.
+const pdfAvailable = existsSync('public/pdf/my_cv.pdf');
 
 const highlights = [
   {
@@ -50,8 +56,18 @@ const highlights = [
     </ul>
 
     <div class="cv__download">
-      <a class="button button--primary" href="/pdf/my_cv.pdf" download>{t('cv.download')}</a>
-      <p class="cv__note mono">{t('cv.note')}</p>
+      {
+        pdfAvailable ? (
+          <>
+            <a class="button button--primary" href="/pdf/my_cv.pdf" download>
+              {t('cv.download')}
+            </a>
+            <p class="cv__note mono">{t('cv.note')}</p>
+          </>
+        ) : (
+          <p class="cv__pending mono">{t('cv.unavailable')}</p>
+        )
+      }
     </div>
   </div>
 </div>
@@ -91,5 +107,20 @@ const highlights = [
     margin-top: var(--space-2);
     color: var(--color-text-muted);
     font-size: 0.8rem;
+  }
+
+  .cv__pending {
+    max-width: var(--measure);
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  .cv__pending::before {
+    content: '> ';
+    color: var(--color-accent);
   }
 </style>
