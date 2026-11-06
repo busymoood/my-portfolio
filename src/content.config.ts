@@ -30,6 +30,9 @@ const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/blog' }),
   schema: z.object({
     title: z.string().min(1, 'title is required'),
+    // A post lives in exactly one language and is built under exactly one URL
+    // (`/blog/...` for EN, `/fr/blog/...` for FR). No duplicated content.
+    lang: z.enum(['en', 'fr']),
     date: z.coerce.date(),
     tags: z.array(z.string().min(1)),
     summary: z.string().min(1, 'summary is required'),

@@ -9,7 +9,11 @@ const lang: Lang = 'en';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
+  return posts
+    .filter((post) => post.data.lang === 'en')
+    // Drafts stay reachable in `astro dev` but are never built in production.
+    .filter((post) => !import.meta.env.PROD || !post.data.draft)
+    .map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
 }
 
 const { post } = Astro.props;
