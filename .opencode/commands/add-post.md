@@ -12,12 +12,16 @@ Consignes :
    ```yaml
    ---
    title: "<titre>"
+   lang: "en"          # "en" ou "fr" — un billet = une langue = une URL
    date: "<date du jour ISO YYYY-MM-DD>"
    tags: []
    summary: "<une ligne pour l'index>"
    draft: true
    ---
    ```
+   La langue par défaut est `en` ; demande à Julien si le billet doit être en
+   français. Un billet `en` vit sous `/blog/...`, un billet `fr` sous
+   `/fr/blog/...` — pas de duplication.
 3. `draft` doit être **true** : la publication se fera via un passage à
    `draft: false` validé par Julien, jamais automatisé.
 4. Écris un squelette de billet (titres de sections, points à développer) —

@@ -33,9 +33,15 @@ Dockerfile nginx.conf docker-compose.yml   # site : build + runtime + tunnel
 ## Règles de contenu (non négociables)
 
 1. **Un billet de blog = `content/blog/<slug>.md`**, frontmatter obligatoire :
-   `title`, `date` (ISO `YYYY-MM-DD`), `tags`, `summary`, `draft`.
+   `title`, `lang` (`en`|`fr`), `date` (ISO `YYYY-MM-DD`), `tags`, `summary`,
+   `draft`.
+   - **Un billet = une langue = une URL** : `en` sous `/blog/<slug>`, `fr` sous
+     `/fr/blog/<slug>` ; pas de duplication. L'index de l'autre langue affiche
+     un repli « traduction à venir » avec un lien vers la version d'origine.
    - Nouveau billet = `draft: true` par défaut ; ne jamais passer à `draft: false`
      sans l'accord explicite de Julien.
+   - Les brouillons sont visibles en `astro dev` (badge) et **exclus du build de
+     production** (ni index, ni page).
    - Le slug est en kebab-case, stable après publication (ne pas renommer un slug
      publié — les URLs sont maintenues).
 2. **Une fiche projet = `content/projects/<slug>/index.md`**, frontmatter
