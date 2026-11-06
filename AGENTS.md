@@ -29,7 +29,7 @@ public/pdf/                 # PDF du CV (téléchargé de la Release en CI, jama
 latex/Makefile             # build/watch/clean latexmk
 Dockerfile nginx.conf                      # site : build + runtime
 docker-compose.yml                         # dev container local
-deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR + tunnel optionnel)
+deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR, réseau du tunnel existant)
 ```
 
 ## Règles de contenu (non négociables)
