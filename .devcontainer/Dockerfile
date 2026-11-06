@@ -22,7 +22,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
 	&& rm -rf /var/lib/apt/lists/*
 
 # ---- Playwright (audits web, skill webapp-testing / Phase 5) ----
-# Browsers partagés dans /opt (généré au build, utilisable par vscode)
+# Browsers partagés dans /opt (généré au build, utilisable par le user dev)
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
 RUN python3 -m pip install --no-cache-dir --break-system-packages playwright \
 	&& playwright install --with-deps chromium
@@ -66,12 +66,18 @@ RUN install -d -m 0755 /etc/apt/keyrings \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
-# ---- Répertoires HOME pré-créés et possédés par vscode ----
-# (sinon les mounts compose/devcontainer créent leurs ancêtres en root
-#  et des outils comme opencode échouent avec EACCES en mkdir ~/.local/state)
-RUN mkdir -p /home/vscode/.config /home/vscode/.local/share /home/vscode/.local/state /home/vscode/.cache \
-	&& chown -R vscode:vscode /home/vscode \
-	&& usermod -aG 0 vscode
+# ---- Utilisateur non-root `dev` (uid 1000 = uid hôte classique) ----
+# (le user `vscode` fourni par l'image de base est supprimé — nom imposé,
+#  on veut un user neutre ; sinon les mounts compose/devcontainer créent
+#  leurs ancêtres en root et des outils comme opencode échouent avec
+#  EACCES en mkdir ~/.local/state)
+RUN userdel -r vscode 2>/dev/null || true \
+	&& groupdel vscode 2>/dev/null || true \
+	&& rm -rf /home/vscode \
+	&& useradd -m -s /bin/bash -u 1000 dev \
+	&& mkdir -p /home/dev/.config /home/dev/.local/share /home/dev/.local/state /home/dev/.cache \
+	&& chown -R dev:dev /home/dev \
+	&& usermod -aG 0 dev
 
 # ---- OpenCode v2 (npm: opencode-ai figé sur 1.x — le script officiel installe
 # la dernière version, binaire natif auto-détecté amd64/arm64) ----

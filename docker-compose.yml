@@ -15,17 +15,17 @@ services:
       context: .
       dockerfile: .devcontainer/Dockerfile
     working_dir: /workspace
-    user: vscode
-    # socket Docker hôte = root:root → groupe 0 pour l'utilisateur vscode
+    user: dev
+    # socket Docker hôte = root:root → groupe 0 pour l'utilisateur dev
     group_add: ["0"]
     volumes:
       - .:/workspace
       - /var/run/docker.sock:/var/run/docker.sock
-      - ~/.config/nvim:/home/vscode/.config/nvim
-      - ~/.local/share/nvim:/home/vscode/.local/share/nvim
-      - ~/.config/lazygit:/home/vscode/.config/lazygit
-      - ~/.config/opencode:/home/vscode/.config/opencode
-      - ~/.local/share/opencode:/home/vscode/.local/share/opencode
+      - ~/.config/nvim:/home/dev/.config/nvim
+      - ~/.local/share/nvim:/home/dev/.local/share/nvim
+      - ~/.config/lazygit:/home/dev/.config/lazygit
+      - ~/.config/opencode:/home/dev/.config/opencode
+      - ~/.local/share/opencode:/home/dev/.local/share/opencode
     command: sleep infinity
     profiles: ["dev"]
 

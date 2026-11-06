@@ -4,13 +4,14 @@ Site personnel **CV + portfolio + blog** — CV en LaTeX, portfolio de projets d
 blog en Markdown. Anglais par défaut (racine `/`), français sous `/fr/`.
 Déploiement : image Docker + **Cloudflare Tunnel** (aucun port public).
 
-> 🚧 **Statut : Phase 0 terminée** — l'atelier est prêt (dev container + skills +
-> commands), le squelette Astro du site arrive. Les conventions vivent dans `AGENTS.md`.
+> 🚧 **Statut : Phase 1 terminée** — l'atelier (dev container + skills + commands)
+> et le squelette Astro bilingue du site sont en place. Pour la suite, lire
+> `.opencode/HANDOFF.md` et la table d'état de `docs/spec.md`.
 
 ## Prérequis
 
 - [Docker](https://www.docker.com/) avec Docker Compose v2 (inclus avec Docker Desktop) — c'est tout.
-- Pas besoin de VS Code : le développement se fait **dans le container**, avec NeoVim/LazyVim de l'environnement.
+- Aucun éditeur spécifique requis : le développement se fait **dans le container**, avec NeoVim/LazyVim de l'environnement.
 
 ## Dev container (principal)
 
@@ -28,7 +29,7 @@ docker compose --profile dev exec dev bash
 docker compose --profile dev build dev
 ```
 
-Le container démarre dans `/workspace` (le repo monté). Tu y es utilisateur `vscode`.
+Le container démarre dans `/workspace` (le repo monté). Tu y es utilisateur `dev`.
 
 ### Outils disponibles dans le container
 
@@ -77,7 +78,7 @@ Un agent qui prend le relais : lire `.opencode/HANDOFF.md` (état + prochaines �
 ### Compiler le CV en local (LaTeX)
 
 ```sh
-# Build une fois
+# Build une fois (ou `make -C latex`, équivalent éditeur-agnostique)
 latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error \
         -output-directory=latex latex/my_cv.tex
 
@@ -92,7 +93,7 @@ En CI, le workflow `deploy-pdf.yml` compile et **publie le PDF en GitHub Release
 ### Build du site
 
 ```sh
-# À venir (Phase 1) : npm ci && npm run build
+# Build du site (Phase 1) : npm ci && npm run build
 # Image de prod (Phase 4) :
 docker compose --profile prod build web
 ```

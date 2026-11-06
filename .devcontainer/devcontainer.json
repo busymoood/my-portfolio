@@ -10,50 +10,16 @@
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "overrideCommand": true,
-  "remoteUser": "vscode",
+  "remoteUser": "dev",
   // Configs hôtes montées dans le conteneur :
   // nvim (config + plugins LazyVim) — lazygit — OpenCode (config + état/auth)
   "mounts": [
-    "source=${localEnv:HOME}/.config/nvim,target=/home/vscode/.config/nvim,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.local/share/nvim,target=/home/vscode/.local/share/nvim,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.config/lazygit,target=/home/vscode/.config/lazygit,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.config/nvim,target=/home/dev/.config/nvim,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.local/share/nvim,target=/home/dev/.local/share/nvim,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/lazygit,target=/home/dev/.config/lazygit,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/opencode,target=/home/dev/.config/opencode,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.local/share/opencode,target=/home/dev/.local/share/opencode,type=bind,consistency=cached"
   ],
   "forwardPorts": [4321],
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "James-Yu.latex-workshop",
-        "ms-azuretools.vscode-docker"
-      ],
-      "settings": {
-        "latex-workshop.view.pdf.viewer": "tab",
-        "latex-workshop.latex.autoBuild.run": "onSave",
-        "latex-workshop.latex.tools": [
-          {
-            "name": "latexmk",
-            "command": "latexmk",
-            "args": [
-              "-pdf",
-              "-interaction=nonstopmode",
-              "-halt-on-error",
-              "-file-line-error",
-              "-outdir=%DIR%",
-              "%DOC%"
-            ]
-          }
-        ],
-        "latex-workshop.latex.recipes": [
-          {
-            "name": "latexmk",
-            "tools": [
-              "latexmk"
-            ]
-          }
-        ]
-      }
-    }
-  },
   "postCreateCommand": "latexmk -v"
 }
