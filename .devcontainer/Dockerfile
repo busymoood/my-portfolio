@@ -73,7 +73,10 @@ RUN mkdir -p /home/vscode/.config /home/vscode/.local/share /home/vscode/.local/
 	&& chown -R vscode:vscode /home/vscode \
 	&& usermod -aG 0 vscode
 
-# ---- OpenCode (via npm officielle, même canal que l'hôte) ----
-RUN npm install -g opencode-ai@latest
+# ---- OpenCode v2 (npm: opencode-ai figé sur 1.x — le script officiel installe
+# la dernière version, binaire natif auto-détecté amd64/arm64) ----
+RUN curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path \
+	&& cp /root/.opencode/bin/opencode /usr/local/bin/opencode \
+	&& rm -rf /root/.opencode
 
 WORKDIR /work
