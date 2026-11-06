@@ -1,12 +1,13 @@
-# myPortfolio *(repo local : `my-cv`)*
+# myPortfolio
 
 Site personnel **CV + portfolio + blog** — CV en LaTeX, portfolio de projets détaillés,
 blog en Markdown. Anglais par défaut (racine `/`), français sous `/fr/`.
-Déploiement : image Docker + **Cloudflare Tunnel** (aucun port public).
+Déploiement : image Docker multi-arch + **Cloudflare Tunnel** (aucun port public).
 
-> 🚧 **Statut : Phase 1 terminée** — l'atelier (dev container + skills + commands)
-> et le squelette Astro bilingue du site sont en place. Pour la suite, lire
-> `.opencode/HANDOFF.md` et la table d'état de `docs/spec.md`.
+> **Statut : Phases 0 à 4 terminées** — atelier agentique, squelette bilingue,
+> contenus réels (3 fiches projet), blog (routage par langue, brouillons exclus
+> du build) et CI multi-arch publiant l'image sur GHCR. Reste la Phase 5
+> (qualité & lancement). Voir la table d'état de `docs/spec.md`.
 
 ## Prérequis
 
@@ -20,13 +21,13 @@ neovim stable + lazygit + opencode + gh + jq + Playwright/Chromium).
 
 ```sh
 # 1) Construire l'image et démarrer le container de dev (première fois ≈ 10-20 min)
-docker compose --profile dev up -d --build
+docker compose up -d --build
 
 # 2) Entrer dedans
-docker compose --profile dev exec dev bash
+docker compose exec dev bash
 
 # (rebuild d'image après toute modification du Dockerfile)
-docker compose --profile dev build dev
+docker compose build dev
 ```
 
 Le container démarre dans `/workspace` (le repo monté). Tu y es utilisateur `dev`.
@@ -88,21 +89,58 @@ latexmk -pvc -pdf -interaction=nonstopmode -halt-on-error -file-line-error \
 ```
 → `latex/my_cv.pdf` (ignoré par git). `latexmk -C ...` pour nettoyer.
 En CI, le workflow `deploy-pdf.yml` compile et **publie le PDF en GitHub Release**
-(tag `cv-<n>`) — le site téléchargera la dernière Release, on ne commit jamais de PDF.
+(tag `cv-<n>`). La CI du site télécharge la dernière Release dans
+`public/pdf/` avant le build — on ne commit jamais de PDF.
 
-### Build du site
+### Développement du site
 
 ```sh
-# Build du site (Phase 1) : npm ci && npm run build
-# Image de prod (Phase 4) :
-docker compose --profile prod build web
+npm ci
+npm run dev        # http://localhost:4321 (port forwardé dans le dev container)
+npm run lint       # astro check + validation des covers 16:9
+npm run build      # build statique dans dist/
+npm run preview    # sert dist/ en local
 ```
 
-### Site en prod (VPS + tunnel)
+### Contenus
+
+- **Projet** : `content/projects/<slug>/index.md` + une cover locale **16:9**
+  (`cover.png`/`cover.jpg`). `/add-project <slug>` scaffolde le dossier et le
+  frontmatter.
+- **Billet** : `content/blog/<slug>.md`, avec `lang: "en" | "fr"`. Un billet
+  vit sous une seule URL (`/blog/...` ou `/fr/blog/...`). `/add-post <slug>`
+  crée un brouillon (`draft: true`) par défaut ; un brouillon est visible en
+  `astro dev` mais exclu du build de production.
+- Les fiches projet sont rédigées en anglais ; le repli « traduction à venir »
+  est géré côté site pour le français.
+
+### CI & image
+
+À chaque push sur `main`, `.github/workflows/site.yml` :
+
+1. lance le lint ;
+2. construit l'image **amd64 + arm64** sur runners natifs ;
+3. télécharge `my_cv.pdf` depuis la dernière Release `cv-*` ;
+4. smoke-teste l'image amd64 ;
+5. publie le manifeste sur GHCR.
+
+```text
+ghcr.io/busymoood/my-portfolio:latest
+ghcr.io/busymoood/my-portfolio:sha-<court>
+```
+
+Le package doit être **public** (sinon `docker login ghcr.io` sur la cible).
+Le workflow se relance aussi à la fin de `deploy-pdf.yml` pour embarquer le
+PDF fraîchement publié.
+
+### Déploiement VPS
+
+La CI ne déploie pas. Le VPS tire l'image et exécute sa stack :
+voir **[`deploy/README.md`](deploy/README.md)**.
 
 ```sh
-# sur le VPS, avec un .env contenant TUNNEL_TOKEN=<jeton cloudflared>
-docker compose --profile prod up -d
+docker compose -f deploy/docker-compose.vps.yml pull
+docker compose -f deploy/docker-compose.vps.yml up -d --no-build
 ```
 
 ## Conventions & ce qui est automatique

@@ -192,8 +192,9 @@ Textes d'interface (labels de nav, « Voir mon CV », etc.) dans des fichiers de
 
 **Containerisation**
 - **`Dockerfile` multi-stage** : build (Node → `astro build`) puis exécution minimale (`nginx:alpine`) servant les fichiers statiques. Image finale de quelques Mo.
-- **`docker-compose.yml`** à la racine : service `web` (l'image construite), prêt pour un **VPS**.
-- **`cloudflared`** (tunnel Cloudflare) en second service du compose : relie le site au réseau Cloudflare sans ouvrir de port public ; HTTPS géré par le bord Cloudflare. Aucun reverse proxy TLS à maintenir côté serveur.
+- **`docker-compose.yml`** à la racine : **dev container uniquement** (service `dev`), montages des configs hôte.
+- **`deploy/docker-compose.vps.yml`** : déploiement sur VPS — service `web` (image publiée sur GHCR) et `cloudflared` **optionnel** (profil `tunnel`). Aucun volume, aucun build côté serveur.
+- **`cloudflared`** (tunnel Cloudflare) : relie le site au réseau Cloudflare sans ouvrir de port public ; HTTPS géré par le bord Cloudflare. Aucun reverse proxy TLS à maintenir côté serveur.
 - **Domaine : `ficaud.xyz`** (racine) via Cloudflare DNS () ; redirection `www.` → apex à gérer côté Cloudflare.
 - **`devcontainer.json`** : Node LTS + Astro extensions éditoriales ; un coup de `docker compose up` sur la cible `dev` et le site tourne localement en mode dev.
 
@@ -212,7 +213,11 @@ myPortfolio/               # nouveau repo (init local fait, remote à créer)
 │   ├── deploy-pdf.yml     # CI CV existante (build → Release)
 │   └── site.yml           # CI du site (Phase 4)
 ├── devcontainer.json      # dérivé du .devcontainer LaTeX existant (Node en Phase 1)
-├── Dockerfile / docker-compose.yml / nginx.conf
+├── docker-compose.yml     # dev container local
+├── deploy/
+│   ├── docker-compose.vps.yml   # VPS : image GHCR + cloudflared optionnel
+│   └── README.md
+├── Dockerfile / nginx.conf
 ├── .opencode/             # skills + commands + AGENTS.md
 ├── content/
 │   ├── projects/<slug>/index.md
