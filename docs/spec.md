@@ -11,7 +11,7 @@
 | 1 — Squelette | ✅ Réalisée | Astro navigable bilingue (`/` + `/fr/`), pages `cv`/`projects`/`blog`/`404`, layouts + design tokens Kanagawa, collections zod strictes, contenus factices (2 projets placeholder + 2 billets brouillon), lint + build verts |
 | 2 — Contenus réels | ✅ Réalisée | 3 fiches EN (relic-core, Ovalbot, Relic Hardware Guide) avec couvertures 16:9 dark, ordre éditorial sur `/projects`, repli « traduction à venir » sur `/fr` ; CV LaTeX conservé tel quel (pas de variante FR) |
 | 3 — Blog | ✅ Réalisée | Billets routés par langue (une URL par billet), brouillons exclus du build de production (404 en prod, visibles en dev), extraits dans l'index, état vide et repli inter-langue ; blog vide au lancement |
-| 4 — Infra | ⏳ À faire | Dockerfile multi-stage, compose + cloudflared, CI GHCR + deploy |
+| 4 — Infra | ✅ Réalisée | `site.yml` : lint, build **amd64 + arm64** sur runners natifs, smoke test avant publication, merge du manifeste et push GHCR (package public) ; PDF téléchargé de la dernière Release `cv-*` (repli si absente) ; page `/cv` sans lien mort ; compose aligné sur l'image publiée. Pas de job de déploiement : la cible tire l'image et gère son tunnel. |
 | 5 — Qualité & lancement | ⏳ À faire | Audits, 404, sitemap, tunnel en prod, DNS `ficaud.xyz` |
 
 Remote : `busymoood/my-portfolio` (origine existante conservée). Voir §7 pour le détail des phases.
@@ -198,9 +198,9 @@ Textes d'interface (labels de nav, « Voir mon CV », etc.) dans des fichiers de
 - **`devcontainer.json`** : Node LTS + Astro extensions éditoriales ; un coup de `docker compose up` sur la cible `dev` et le site tourne localement en mode dev.
 
 **CI/CD (GitHub Actions)**
-- À chaque push sur `main` : build de l'image → publication sur **GHCR** (registry GitHub, gratuit, colocalisé avec le repo).
-- Déploiement VPS : job SSH léger — `docker compose pull && docker compose up -d` sur le serveur. Pas d'agent à installer, rien de manuel.
-- À trancher pour la V1 : le job SSH peut être remplacé plus tard par un mécanisme plus découplé (webhook, Watchtower sur GHCR). Acceptable en l'état.
+- À chaque push sur `main` : lint, build de l'image **multi-arch (amd64 + arm64)** sur runners natifs, smoke test puis publication sur **GHCR** (registry GitHub, gratuit, colocalisé avec le repo, package public).
+- **Déploiement** : la CI ne déploie pas. La cible tire l'image (`docker compose pull && docker compose up -d`) et gère elle-même son tunnel Cloudflare ; aucun job SSH ni secret de serveur dans la CI du site.
+- Le workflow écoute aussi la fin de `deploy-pdf.yml` (`workflow_run`) pour reconstruire l'image avec le PDF fraîchement publié.
 - Bonus : le **workflow existant `deploy-pdf.yml`** produit le PDF (GitHub Release tag `cv-<n>`) ; la CI du site **télécharge** ce PDF de la dernière Release dans `public/pdf/` (voir 3.1).
 
 ### 5.3 Structure d'arborescence cible
@@ -266,7 +266,7 @@ myPortfolio/               # nouveau repo (init local fait, remote à créer)
 | **1. Squelette** | Layouts, navigation, design tokens (palette, polices, dark), pages vides mais routées | Site navigable avec contenus factices, `/check` vert |
 | **2. Contenus réels** | CV LaTeX enrichi + **3 à 5 fiches projet réelles** | `/cv` et `/projects` à contenu réel (PDF compilé en CI) |
 | **3. Blog** | Collections Markdown, index avec état vide propre, gabarit de billet | Un billet de test en brouillon fonctionne de bout en bout |
-| **4. Infra** | Dockerfile multi-stage, compose + cloudflared, CI (GHCR + deploy), PDF du CV | Déploiement automatisé complet vers le VPS de test |
+| **4. Infra** | Dockerfile multi-stage, compose + cloudflared, CI multi-arch (GHCR), PDF du CV | Image amd64/arm64 publiée sur GHCR et pullable ; la cible déploie via son compose (tunnel géré côté cible) |
 | **5. Qualité & lancement** | Audit responsive/mobile, accessibilité, Lighthouse, 404, sitemap, tunnel en prod, DNS | Site en production, checklist finale verte |
 
 **Règle d'or** : chaque phase se termine par un état déployable — « `docker compose up` local + `/check` vert » à chaque jalon, et la CI de déploiement branchée dès la phase 1 (l'image existe tôt, le site reste publiable en continu).
