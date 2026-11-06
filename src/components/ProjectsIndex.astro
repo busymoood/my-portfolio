@@ -12,8 +12,21 @@ interface Props {
 
 const { lang, limit } = Astro.props;
 const t = useTranslations(lang);
+
+// Curated order: flagships first, then the companion guide. Slugs not listed
+// here keep the alphabetical fallback, so adding a project stays a one-file job.
+const PROJECT_ORDER = ['relic-core', 'ovalbot', 'relic-hw'];
+
+function orderRank(slug: string): number {
+  const index = PROJECT_ORDER.indexOf(slug);
+  return index === -1 ? PROJECT_ORDER.length : index;
+}
+
 let projects = await getCollection('projects');
-projects = projects.sort((a, b) => projectSlug(a).localeCompare(projectSlug(b)));
+projects = projects.sort((a, b) => {
+  const rank = orderRank(projectSlug(a)) - orderRank(projectSlug(b));
+  return rank !== 0 ? rank : projectSlug(a).localeCompare(projectSlug(b));
+});
 if (limit) projects = projects.slice(0, limit);
 ---
 
