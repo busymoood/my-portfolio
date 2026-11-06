@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { postSlug } from '../lib/slugs';
+import { formatDate } from '../lib/dates';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Drafts are never listed in production; they stay visible in `astro dev`,
+// flagged as drafts, so the writing loop can be checked locally.
+const posts = (
+  await getCollection('blog', (post) => (import.meta.env.PROD ? !post.data.draft : true))
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+{
+  posts.length === 0 ? (
+    <p class="empty mono">{t('blog.empty')}</p>
+  ) : (
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <span class="post-list__date mono">{formatDate(post.data.date, lang)}</span>
+          <a class="post-list__title" href={localizePath(`/blog/${postSlug(post)}`, lang)}>
+            {post.data.title}
+          </a>
+          <span class="post-list__tags mono">
+            {post.data.tags.map((tag) => (
+              <span class="tag">#{tag}</span>
+            ))}
+            {!import.meta.env.PROD && post.data.draft && <span class="tag post-list__draft">{t('blog.draft')}</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .post-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .post-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-list li:first-child {
+    padding-top: 0;
+  }
+
+  .post-list__date {
+    min-width: 7.5ch;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  .post-list__title {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    text-decoration: none;
+  }
+
+  .post-list__title:hover {
+    color: var(--color-accent);
+  }
+
+  .post-list__tags {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .post-list__draft {
+    border-style: dashed;
+    color: var(--color-accent);
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .empty::before {
+    content: '> ';
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 40rem) {
+    .post-list__tags {
+      margin-left: 0;
+    }
+  }
+</style>

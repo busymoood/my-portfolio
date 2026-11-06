@@ -1,0 +1,95 @@
+---
+import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import ProjectsIndex from './ProjectsIndex.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const featured = 2;
+---
+
+<section class="hero">
+  <div class="container">
+    <p class="hero__eyebrow mono">{t('home.kicker')}</p>
+    <h1 class="hero__name">Julien Fichet</h1>
+    <p class="hero__tagline">{t('site.tagline')}</p>
+    <div class="hero__body prose">
+      <p>{t('home.intro')}</p>
+    </div>
+    <div class="hero__actions">
+      <a class="button button--primary" href={localizePath('/cv', lang)}>{t('home.cta.cv')}</a>
+      <a class="button" href={localizePath('/projects', lang)}>{t('home.cta.projects')}</a>
+    </div>
+  </div>
+</section>
+
+<section class="featured">
+  <div class="container">
+    <h2 class="section-title mono">{t('home.latest')}</h2>
+    <ProjectsIndex lang={lang} limit={featured} />
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--space-7) var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero__eyebrow {
+    margin-bottom: var(--space-2);
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+
+  .hero__eyebrow::before {
+    content: '// ';
+    color: var(--color-border-strong);
+  }
+
+  .hero__name {
+    margin-bottom: var(--space-3);
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .hero__tagline {
+    max-width: 30ch;
+    margin-bottom: var(--space-5);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.4;
+  }
+
+  .hero__body {
+    margin-bottom: var(--space-5);
+    color: var(--color-text-muted);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .featured {
+    padding-block: var(--space-6) 0;
+  }
+
+  .section-title {
+    margin-bottom: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  .section-title::before {
+    content: '> ';
+    color: var(--color-accent);
+  }
+</style>

@@ -1,0 +1,35 @@
+:root {
+  color-scheme: dark;
+
+  /* Kanagawa-inspired, soft green accent — the only chromatic colour on the site. */
+  --color-bg: #15161c;
+  --color-surface: #1c1e26;
+  --color-surface-raised: #23262f;
+  --color-border: #2f333e;
+  --color-border-strong: #3d424f;
+  --color-text: #d8d5ca;
+  --color-text-muted: #9296a0;
+  --color-accent: #a3c98b;
+  --color-accent-strong: #c0dfa8;
+  --color-accent-dim: rgb(163 201 139 / 12%);
+
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-base: 1.0625rem;
+  --leading: 1.65;
+  --measure: 42rem;
+  --site-width: 68rem;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.25rem;
+  --space-6: 3.5rem;
+  --space-7: 5.5rem;
+  --radius: 2px;
+  --header-height: 3.75rem;
+
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}

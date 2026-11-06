@@ -1,0 +1,128 @@
+export const languages = {
+  en: 'English',
+  fr: 'Français',
+} as const;
+
+export type Lang = keyof typeof languages;
+
+export const defaultLang: Lang = 'en';
+
+const ui = {
+  en: {
+    'site.title': 'Julien Fichet',
+    'site.tagline': 'Software engineer with a taste for careful, self-hosted tools.',
+    'site.description':
+      'CV, portfolio and notes by Julien Fichet — software engineer building offline-first and self-hosted tools.',
+    'nav.cv': 'CV',
+    'nav.projects': 'Projects',
+    'nav.blog': 'Blog',
+    'nav.skip': 'Skip to content',
+    'nav.home': 'Home',
+    'lang.switch': 'Version française',
+    'lang.aria': 'Change language',
+    'home.kicker': 'software engineer',
+    'home.intro':
+      'I build software that behaves predictably: firmware that never phones home, services that run on a shelf in my flat, and tools that explain themselves. This site is my CV, a few projects worth reading, and the occasional note.',
+    'home.cta.cv': 'Read my CV',
+    'home.cta.projects': 'Browse projects',
+    'home.latest': 'Selected work',
+    'cv.title': 'Curriculum vitae',
+    'cv.intro':
+      'The full CV is maintained as LaTeX source and compiled by CI. This page is a short summary — download the PDF for the complete version.',
+    'cv.download': 'Download the CV (PDF)',
+    'cv.note': 'PDF in English. Updated automatically when the source changes.',
+    'projects.title': 'Projects',
+    'projects.intro': 'Things I build, run and maintain. Mostly offline-first, mostly self-hosted.',
+    'projects.empty': 'No projects published yet.',
+    'projects.status.actif': 'active',
+    'projects.status.archive': 'archived',
+    'projects.period': 'Period',
+    'projects.languages': 'Languages',
+    'projects.repo': 'Source',
+    'projects.demo': 'Demo',
+    'projects.back': 'All projects',
+    'blog.title': 'Blog',
+    'blog.intro': 'Notes on firmware, small services and the tooling around them.',
+    'blog.empty': 'No posts yet. The first ones are being written.',
+    'blog.back': 'All posts',
+    'blog.draft': 'draft',
+    'blog.draftNote': 'This post is still a draft — it is not listed on the blog index.',
+    'notfound.title': 'Command not found',
+    'notfound.body': 'The page you asked for does not exist — or it moved.',
+    'notfound.cta': 'Back to the home page',
+    'footer.contact': 'Contact',
+    'footer.rights': '© {year} Julien Fichet',
+    'footer.built': 'Built with Astro. No tracking, no cookie banner.',
+  },
+  fr: {
+    'site.title': 'Julien Fichet',
+    'site.tagline': 'Ingénieur logiciel, amateur d’outils soignés et auto-hébergés.',
+    'site.description':
+      'CV, portfolio et notes de Julien Fichet — ingénieur logiciel, outils offline-first et auto-hébergés.',
+    'nav.cv': 'CV',
+    'nav.projects': 'Projets',
+    'nav.blog': 'Blog',
+    'nav.skip': 'Aller au contenu',
+    'nav.home': 'Accueil',
+    'lang.switch': 'English version',
+    'lang.aria': 'Changer de langue',
+    'home.kicker': 'ingénieur logiciel',
+    'home.intro':
+      'Je construis des logiciels au comportement prévisible : un firmware qui n’appelle jamais la maison, des services qui tournent sur une étagère chez moi, et des outils qui s’expliquent. Ce site, c’est mon CV, quelques projets qui valent la lecture, et des notes à l’occasion.',
+    'home.cta.cv': 'Lire mon CV',
+    'home.cta.projects': 'Voir les projets',
+    'home.latest': 'Sélection',
+    'cv.title': 'Curriculum vitæ',
+    'cv.intro':
+      'Le CV complet est maintenu en LaTeX et compilé par la CI. Cette page n’en donne qu’un résumé — téléchargez le PDF pour la version intégrale.',
+    'cv.download': 'Télécharger le CV (PDF)',
+    'cv.note': 'PDF en anglais. Mis à jour automatiquement avec la source.',
+    'projects.title': 'Projets',
+    'projects.intro': 'Ce que je construis, fais tourner et maintiens. Surtout offline-first, surtout auto-hébergé.',
+    'projects.empty': 'Aucun projet publié pour l’instant.',
+    'projects.status.actif': 'actif',
+    'projects.status.archive': 'archivé',
+    'projects.period': 'Période',
+    'projects.languages': 'Langages',
+    'projects.repo': 'Source',
+    'projects.demo': 'Démo',
+    'projects.back': 'Tous les projets',
+    'blog.title': 'Blog',
+    'blog.intro': 'Notes sur le firmware, les petits services et l’outillage qui va autour.',
+    'blog.empty': 'Pas encore de billet. Les premiers sont en écriture.',
+    'blog.back': 'Tous les billets',
+    'blog.draft': 'brouillon',
+    'blog.draftNote': 'Ce billet est encore un brouillon — il n’apparaît pas dans l’index du blog.',
+    'notfound.title': 'Commande introuvable',
+    'notfound.body': 'La page demandée n’existe pas — ou elle a déménagé.',
+    'notfound.cta': 'Retour à l’accueil',
+    'footer.contact': 'Contact',
+    'footer.rights': '© {year} Julien Fichet',
+    'footer.built': 'Fait avec Astro. Pas de tracking, pas de bandeau cookies.',
+  },
+} as const;
+
+export type UIKey = keyof (typeof ui)['en'];
+
+export function getLangFromUrl(url: URL): Lang {
+  const [, first] = url.pathname.split('/');
+  if (first === 'fr') return 'fr';
+  return 'en';
+}
+
+export function useTranslations(lang: Lang) {
+  return function t(key: UIKey): string {
+    return ui[lang][key] ?? ui[defaultLang][key];
+  };
+}
+
+/** Prefix a root-relative path with the locale segment (none for the default one). */
+export function localizePath(path: string, lang: Lang): string {
+  if (lang === defaultLang) return path;
+  return path === '/' ? `/${lang}/` : `/${lang}${path}`;
+}
+
+/** Strip the locale prefix from a pathname, keeping it root-relative. */
+export function stripLocale(pathname: string): string {
+  return pathname.replace(/^\/fr(?=\/|$)/, '') || '/';
+}

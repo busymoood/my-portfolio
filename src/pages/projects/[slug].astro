@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectDetail from '../../components/ProjectDetail.astro';
+import { type Lang } from '../../i18n/ui';
+import { projectSlug } from '../../lib/slugs';
+
+const lang: Lang = 'en';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({ params: { slug: projectSlug(project) }, props: { project } }));
+}
+
+const { project } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={project.data.title} description={project.data.summary}>
+  <ProjectDetail lang={lang} project={project} />
+</BaseLayout>

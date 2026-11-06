@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { projectSlug } from '../lib/slugs';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  lang: Lang;
+  /** Keep only the first N entries (used by the home page highlights). */
+  limit?: number;
+}
+
+const { lang, limit } = Astro.props;
+const t = useTranslations(lang);
+let projects = await getCollection('projects');
+projects = projects.sort((a, b) => projectSlug(a).localeCompare(projectSlug(b)));
+if (limit) projects = projects.slice(0, limit);
+---
+
+{
+  projects.length === 0 ? (
+    <p class="empty mono">{t('projects.empty')}</p>
+  ) : (
+    <div class="project-grid">
+      {projects.map((project) => (
+        <ProjectCard
+          lang={lang}
+          project={project}
+          href={localizePath(`/projects/${projectSlug(project)}`, lang)}
+        />
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .project-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .empty::before {
+    content: '> ';
+    color: var(--color-accent);
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectsIndex from '../../components/ProjectsIndex.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+const lang: Lang = 'en';
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={t('projects.title')}>
+  <div class="container">
+    <PageIntro title={t('projects.title')} intro={t('projects.intro')} />
+    <ProjectsIndex lang={lang} />
+  </div>
+</BaseLayout>

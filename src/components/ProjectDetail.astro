@@ -1,0 +1,101 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import Breadcrumb from './Breadcrumb.astro';
+import PageIntro from './PageIntro.astro';
+
+interface Props {
+  lang: Lang;
+  project: CollectionEntry<'projects'>;
+}
+
+const { lang, project } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(project);
+---
+
+<Breadcrumb lang={lang} items={[{ label: t('projects.back'), href: '/projects' }, { label: project.data.title }]} />
+
+<div class="container">
+  <PageIntro title={project.data.title} intro={project.data.summary} />
+
+  <p class="project-meta mono">
+    <span class="tag project-meta__status" class:list={[{ 'is-archived': project.data.status === 'archive' }]}>
+      {t(`projects.status.${project.data.status}`)}
+    </span>
+    <span>{project.data.period}</span>
+    <span>{project.data.languages.join(' · ')}</span>
+    <a href={project.data.repo} rel="noopener">{t('projects.repo')} ↗</a>
+    {project.data.demo && <a href={project.data.demo} rel="noopener">{t('projects.demo')} ↗</a>}
+  </p>
+
+  <figure class="project-cover">
+    <Image src={project.data.cover} widths={[800, 1280]} sizes="(max-width: 68rem) 100vw, 68rem" alt={project.data.title} />
+  </figure>
+
+  <div class="prose article">
+    <Content />
+  </div>
+
+  <p class="project-back mono">
+    <a href={localizePath('/projects', lang)}>← {t('projects.back')}</a>
+  </p>
+</div>
+
+<style>
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-4);
+    max-width: var(--measure);
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  .project-meta a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .project-meta a:hover {
+    color: var(--color-accent);
+  }
+
+  .project-meta__status {
+    color: var(--color-accent);
+  }
+
+  .project-meta__status.is-archived {
+    color: var(--color-text-muted);
+  }
+
+  .project-cover {
+    margin: 0 0 var(--space-5);
+  }
+
+  .project-cover :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .project-back {
+    margin-top: var(--space-6);
+    font-size: 0.85rem;
+  }
+
+  .project-back a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .project-back a:hover {
+    color: var(--color-accent);
+  }
+</style>

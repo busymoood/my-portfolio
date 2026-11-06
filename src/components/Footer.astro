@@ -1,0 +1,86 @@
+---
+import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+const contact = [
+  { href: 'mailto:julien@ficaud.xyz', label: 'julien@ficaud.xyz' },
+  { href: 'https://github.com/ficaud', label: 'github.com/ficaud' },
+  { href: 'https://www.linkedin.com/in/julien-fichet/', label: 'linkedin' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <nav class="site-footer__contact" aria-label={t('footer.contact')}>
+      {contact.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+    <p class="site-footer__meta">
+      <span>{t('footer.rights').replace('{year}', String(year))}</span>
+      <span>{t('footer.built')}</span>
+    </p>
+    <a class="site-footer__lang" href={localizePath('/', lang === 'en' ? 'fr' : 'en')}>
+      {t('lang.switch')}
+    </a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-7);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    align-items: baseline;
+    padding-block: var(--space-5);
+  }
+
+  .site-footer__contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-4);
+  }
+
+  .site-footer a {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--color-accent);
+  }
+
+  .site-footer__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin: 0 0 0 auto;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-align: right;
+  }
+
+  .site-footer__lang {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 40rem) {
+    .site-footer__meta {
+      margin-left: 0;
+      text-align: left;
+    }
+  }
+</style>

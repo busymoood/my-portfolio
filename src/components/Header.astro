@@ -1,0 +1,102 @@
+---
+import { localizePath, stripLocale, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const otherLang: Lang = lang === 'en' ? 'fr' : 'en';
+const switchHref = localizePath(stripLocale(Astro.url.pathname), otherLang);
+
+const links = [
+  { href: localizePath('/cv', lang), label: t('nav.cv') },
+  { href: localizePath('/projects', lang), label: t('nav.projects') },
+  { href: localizePath('/blog', lang), label: t('nav.blog') },
+];
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__brand" href={localizePath('/', lang)}>{t('site.title')}</a>
+    <nav class="site-header__nav" aria-label="Main">
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+    <a class="site-header__lang" href={switchHref} aria-label={t('lang.aria')} hreflang={otherLang}>
+      {otherLang.toUpperCase()}
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--header-height);
+  }
+
+  .site-header__brand {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .site-header__brand:hover {
+    color: var(--color-accent);
+  }
+
+  .site-header__nav {
+    display: flex;
+    gap: var(--space-4);
+    margin-left: auto;
+  }
+
+  .site-header__nav a {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .site-header__nav a:hover {
+    color: var(--color-accent);
+  }
+
+  .site-header__lang {
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+
+  .site-header__lang:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 30rem) {
+    .site-header__nav {
+      gap: var(--space-2);
+    }
+
+    .site-header__brand {
+      font-size: 0.85rem;
+    }
+  }
+</style>

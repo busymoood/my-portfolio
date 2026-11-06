@@ -1,0 +1,95 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+import PageIntro from '../components/PageIntro.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const highlights = [
+  {
+    title: lang === 'fr' ? 'Systèmes & backend' : 'Systems & backend',
+    body:
+      lang === 'fr'
+        ? 'Services en production, API Rust et Python, bases SQLite et PostgreSQL, déploiement conteneurisé.'
+        : 'Production services, Rust and Python APIs, SQLite and PostgreSQL, containerised deployment.',
+  },
+  {
+    title: lang === 'fr' ? 'Embarqué & firmware' : 'Embedded & firmware',
+    body:
+      lang === 'fr'
+        ? 'Firmware ESP32 sous Zephyr RTOS en C, cryptographie appliquée, interfaces web locales hors ligne.'
+        : 'ESP32 firmware on Zephyr RTOS in C, applied cryptography, offline local web interfaces.',
+  },
+  {
+    title: lang === 'fr' ? 'Infrastructure' : 'Infrastructure',
+    body:
+      lang === 'fr'
+        ? 'Auto-hébergement sur Raspberry Pi, CI/CD GitHub Actions, images multi-arch, Cloudflare Tunnel.'
+        : 'Self-hosting on Raspberry Pi, GitHub Actions CI/CD, multi-arch images, Cloudflare Tunnel.',
+  },
+];
+---
+
+<div class="container">
+  <PageIntro title={t('cv.title')} intro={t('cv.intro')} />
+
+  <div class="cv">
+    <ul class="cv__highlights">
+      {
+        highlights.map((item) => (
+          <li>
+            <h2>{item.title}</h2>
+            <p>{item.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="cv__download">
+      <a class="button button--primary" href="/pdf/my_cv.pdf" download>{t('cv.download')}</a>
+      <p class="cv__note mono">{t('cv.note')}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cv {
+    display: grid;
+    gap: var(--space-6);
+    max-width: var(--measure);
+    padding-block: var(--space-2) var(--space-5);
+  }
+
+  .cv__highlights {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv__highlights li {
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .cv__highlights h2 {
+    margin-bottom: var(--space-1);
+    font-size: 0.95rem;
+  }
+
+  .cv__highlights p {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .cv__note {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+</style>

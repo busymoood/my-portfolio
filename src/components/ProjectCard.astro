@@ -1,0 +1,100 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  project: CollectionEntry<'projects'>;
+  href: string;
+}
+
+const { lang, project, href } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<article class="project-card">
+  <a class="project-card__cover" href={href} tabindex="-1" aria-hidden="true">
+    <Image src={project.data.cover} alt="" widths={[400, 800]} sizes="(max-width: 40rem) 100vw, 50vw" loading="lazy" />
+  </a>
+  <div class="project-card__body">
+    <h2><a href={href}>{project.data.title}</a></h2>
+    <p class="project-card__summary">{project.data.summary}</p>
+    <p class="project-card__meta mono">
+      <span>{project.data.languages.join(' / ')}</span>
+      <span class:list={['project-card__status', { 'is-archived': project.data.status === 'archive' }]}>
+        {t(`projects.status.${project.data.status}`)}
+      </span>
+    </p>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    transition: border-color 140ms var(--ease);
+  }
+
+  .project-card:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .project-card__cover {
+    display: block;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border);
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-card__cover :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-card__body {
+    padding: var(--space-3);
+  }
+
+  .project-card h2 {
+    margin-bottom: var(--space-1);
+    font-size: 1.05rem;
+  }
+
+  .project-card h2 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .project-card h2 a:hover {
+    color: var(--color-accent);
+  }
+
+  .project-card__summary {
+    margin-bottom: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .project-card__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  .project-card__status {
+    color: var(--color-accent);
+  }
+
+  .project-card__status.is-archived {
+    color: var(--color-text-muted);
+  }
+</style>

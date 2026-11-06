@@ -1,0 +1,60 @@
+---
+import { localizePath, type Lang } from '../i18n/ui';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  lang: Lang;
+  items: Crumb[];
+}
+
+const { lang, items } = Astro.props;
+---
+
+<nav class="breadcrumb mono" aria-label="Breadcrumb">
+  <span class="breadcrumb__root" aria-hidden="true">~</span>
+  {items.map((item) => (
+    <span class="breadcrumb__item">
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      {item.href ? <a href={localizePath(item.href, lang)}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+    </span>
+  ))}
+</nav>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+    margin-bottom: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  .breadcrumb__root {
+    color: var(--color-accent);
+  }
+
+  .breadcrumb__sep {
+    margin-inline: 0.15rem;
+    color: var(--color-border-strong);
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  [aria-current='page'] {
+    color: var(--color-text);
+  }
+</style>
