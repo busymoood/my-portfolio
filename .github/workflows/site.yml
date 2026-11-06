@@ -1,0 +1,204 @@
+# Publish the site image to GitHub Container Registry (GHCR).
+#
+# Builds the multi-stage Dockerfile (Astro build -> nginx) for both
+# linux/amd64 and linux/arm64 on native GitHub runners, downloads the latest
+# CV PDF from a `cv-*` GitHub Release, smoke-tests the amd64 image, then
+# merges both architectures into one manifest list.
+#
+# There is deliberately no deployment job: the target machine pulls the image
+# and runs its own compose file (the Cloudflare tunnel lives on the target).
+
+name: Publish site image
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - 'AGENTS.md'
+      - 'README.md'
+      - '.opencode/**'
+      - 'latex/**'
+  # A LaTeX push triggers the PDF workflow; rebuild the image once the new
+  # `cv-*` Release exists so the image embeds the fresh PDF.
+  workflow_run:
+    workflows: ["Build and deploy CV PDF"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: site-image-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  lint:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint, type-check and validate content
+        run: npm run lint
+
+  build:
+    needs: lint
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            arch: amd64
+            runner: ubuntu-24.04
+            smoke: true
+          - platform: linux/arm64
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            smoke: false
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Download the latest CV PDF
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p public/pdf
+          tag="$(gh release list --repo "$GITHUB_REPOSITORY" --limit 100 \
+            --json tagName,createdAt \
+            --jq '[.[] | select(.tagName | startswith("cv-"))] | sort_by(.createdAt) | reverse | .[0].tagName // empty')"
+          if [ -z "$tag" ]; then
+            echo "::warning::No cv-* release found; building without a CV PDF."
+            exit 0
+          fi
+          echo "Using CV release $tag"
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" \
+            --pattern "my_cv.pdf" --dir public/pdf --clobber
+          test -s public/pdf/my_cv.pdf
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build the amd64 image locally first so the smoke test runs before
+      # anything is published. The layer cache is reused by the digest build.
+      - name: Build the amd64 image for smoke testing
+        if: matrix.smoke
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          push: false
+          tags: site:smoke
+          cache-from: type=gha,scope=${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}
+
+      - name: Smoke test
+        if: matrix.smoke
+        run: |
+          set -euo pipefail
+          docker run -d --name site-smoke -p 8080:80 site:smoke
+          trap 'docker rm -f site-smoke >/dev/null 2>&1 || true' EXIT
+          for _ in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/ >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          for path in / /projects /projects/relic-core /blog /cv; do
+            echo "checking $path"
+            curl -fsS -o /dev/null "http://localhost:8080$path"
+          done
+          if [ -s public/pdf/my_cv.pdf ]; then
+            echo "checking the CV PDF"
+            curl -fsS -o /dev/null http://localhost:8080/pdf/my_cv.pdf
+          fi
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.description=Julien Fichet — CV, portfolio and blog
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}
+
+      - name: Export image digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload the digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-${{ matrix.arch }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the image digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digest-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create the multi-arch manifest
+        working-directory: /tmp/digests
+        run: |
+          set -euo pipefail
+          if [ -z "$(ls -A)" ]; then
+            echo "::error::No image digests found."
+            exit 1
+          fi
+          tags=(--tag "${{ env.IMAGE }}:sha-${GITHUB_SHA::7}")
+          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
+            tags+=(--tag "${{ env.IMAGE }}:latest")
+          fi
+          docker buildx imagetools create "${tags[@]}" \
+            $(printf "${{ env.IMAGE }}@sha256:%s " *)
