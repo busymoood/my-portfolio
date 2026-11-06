@@ -70,7 +70,8 @@ RUN install -d -m 0755 /etc/apt/keyrings \
 # (sinon les mounts compose/devcontainer créent leurs ancêtres en root
 #  et des outils comme opencode échouent avec EACCES en mkdir ~/.local/state)
 RUN mkdir -p /home/vscode/.config /home/vscode/.local/share /home/vscode/.local/state /home/vscode/.cache \
-	&& chown -R vscode:vscode /home/vscode
+	&& chown -R vscode:vscode /home/vscode \
+	&& usermod -aG 0 vscode
 
 # ---- OpenCode (via npm officielle, même canal que l'hôte) ----
 RUN npm install -g opencode-ai@latest

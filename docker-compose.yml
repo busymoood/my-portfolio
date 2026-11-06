@@ -16,6 +16,8 @@ services:
       dockerfile: .devcontainer/Dockerfile
     working_dir: /workspace
     user: vscode
+    # socket Docker hôte = root:root → groupe 0 pour l'utilisateur vscode
+    group_add: ["0"]
     volumes:
       - .:/workspace
       - /var/run/docker.sock:/var/run/docker.sock
