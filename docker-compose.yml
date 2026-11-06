@@ -1,0 +1,38 @@
+# my-cv — services du site
+# Usage :
+#   docker compose --profile dev up -d    → conteneur de dev (scripting agentique)
+#   docker compose --profile prod up -d   → site web + tunnel cloudflared (VPS)
+# Variables d'environnement attendues (fichier .env non commité) :
+#   TUNNEL_TOKEN=<jeton du tunnel Cloudflare>
+name: my-cv
+
+services:
+  # ---- Environnement de développement normé (agents OpenCode, humains) ----
+# Utilise la MÊME image que .devcontainer (LaTeX today ; Node via Astro en Phase 1)
+  dev:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    command: sleep infinity
+    profiles: ["dev"]
+
+  # ---- Site statique (production) ----
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: my-cv/web:latest
+    restart: unless-stopped
+    profiles: ["prod"]
+
+  # ---- Tunnel Cloudflare : relie web au réseau Cloudflare, aucun port public ----
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    profiles: ["prod"]
+    depends_on:
+      - web

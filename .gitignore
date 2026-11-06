@@ -1,0 +1,35 @@
+# === macOS (hérité de l'ancien repo CV) ===
+# Finder metadata
+.DS_Store
+# Thumbnails
+._*
+# Custom folder icons
+Icon
+# Volume root files
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# === LaTeX (hérité de l'ancien repo CV) — sources uniquement dans le repo ===
+latex/my_cv.pdf
+latex/my_cv.out
+latex/my_cv.log
+latex/my_cv.fls
+latex/my_cv.fdb_latexmk
+latex/my_cv.aux
+
+# === Secrets (jamais commités) ===
+.env
+
+# === Site / Node / build ===
+node_modules/
+dist/
+.astro/
+public/pdf/
+
+# === Ancien repo (backup : à retirer du disque quand le nouveau est publié) ===
+my-cv/

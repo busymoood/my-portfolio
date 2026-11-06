@@ -1,0 +1,43 @@
+name: Build and deploy CV PDF
+
+on:
+  push:
+    paths:
+      - latex/my_cv.tex
+      - .github/workflows/deploy-pdf.yml
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: latex/my_cv.tex
+          args: >-
+            -pdf
+            -interaction=nonstopmode
+            -halt-on-error
+            -file-line-error
+            -output-directory=latex
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-cv-pdf
+          path: latex/my_cv.pdf
+
+      - name: Publish PDF to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: cv-${{ github.run_number }}
+          name: CV PDF run ${{ github.run_number }}
+          files: latex/my_cv.pdf
+          generate_release_notes: true
