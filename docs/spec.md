@@ -10,7 +10,7 @@
 | 0 — Atelier agentique | ✅ Réalisée | Init git local (`main`, sans remote), devcontainer + `.opencode/` (skills, commands, AGENTS.md), CI PDF existante migrée |
 | 1 — Squelette | ✅ Réalisée | Astro navigable bilingue (`/` + `/fr/`), pages `cv`/`projects`/`blog`/`404`, layouts + design tokens Kanagawa, collections zod strictes, contenus factices (2 projets placeholder + 2 billets brouillon), lint + build verts |
 | 2 — Contenus réels | ✅ Réalisée | 3 fiches EN (relic-core, Ovalbot, Relic Hardware Guide) avec couvertures 16:9 dark, ordre éditorial sur `/projects`, repli « traduction à venir » sur `/fr` ; CV LaTeX conservé tel quel (pas de variante FR) |
-| 3 — Blog | ⏳ À faire | Collections Markdown, index vide propre, gabarit billet |
+| 3 — Blog | ✅ Réalisée | Billets routés par langue (une URL par billet), brouillons exclus du build de production (404 en prod, visibles en dev), extraits dans l'index, état vide et repli inter-langue ; blog vide au lancement |
 | 4 — Infra | ⏳ À faire | Dockerfile multi-stage, compose + cloudflared, CI GHCR + deploy |
 | 5 — Qualité & lancement | ⏳ À faire | Audits, 404, sitemap, tunnel en prod, DNS `ficaud.xyz` |
 
@@ -135,14 +135,17 @@ Le corps du Markdown = description détaillée libre (contexte, ce que ça fait,
 ```yaml
 ---
 title: ""
+lang: "en"      # "en" | "fr" — un billet vit sous /blog/… (en) ou /fr/blog/… (fr)
 date: "2026-11-06"
 tags: []
-summary: ""   # extrait pour l'index
-draft: false   # true = brouillon invisible en prod, jamais listé
+summary: ""     # extrait pour l'index
+draft: true     # true = brouillon visible en dev, exclu du build de production
 ---
 ```
 
-Purement Markdown. Aucun article au lancement.
+Purement Markdown. Un billet = une langue = une URL (pas de duplication ;
+repli « traduction à venir » sur l'index de l'autre langue). Aucun article au
+lancement.
 
 ### 3.4 Traductions d'interface
 
