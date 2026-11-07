@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "lint": "astro check && node scripts/check-covers.mjs"
+    "lint": "astro check && node scripts/check-covers.mjs",
+    "cover": "python3 scripts/cover/make_cover.py"
   },
   "dependencies": {
     "astro": "^7.4.7"
