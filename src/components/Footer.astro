@@ -17,16 +17,17 @@ const contact = [
 
 <footer class="site-footer">
   <div class="container site-footer__inner">
-    <nav class="site-footer__contact" aria-label={t('footer.contact')}>
-      {contact.map((item) => <a href={item.href}>{item.label}</a>)}
-    </nav>
+    <div class="site-footer__row">
+      <nav class="site-footer__contact" aria-label={t('footer.contact')}>
+        {contact.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <a class="site-footer__lang" href={localizePath('/', lang === 'en' ? 'fr' : 'en')}>
+        {t('lang.switch')}
+      </a>
+    </div>
     <p class="site-footer__meta">
-      <span>{t('footer.rights').replace('{year}', String(year))}</span>
-      <span>{t('footer.built')}</span>
+      {t('footer.rights').replace('{year}', String(year))} · {t('footer.built')}
     </p>
-    <a class="site-footer__lang" href={localizePath('/', lang === 'en' ? 'fr' : 'en')}>
-      {t('lang.switch')}
-    </a>
   </div>
 </footer>
 
@@ -38,16 +39,28 @@ const contact = [
 
   .site-footer__inner {
     display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-block: var(--space-5);
+  }
+
+  .site-footer__row {
+    display: flex;
     flex-wrap: wrap;
     gap: var(--space-3) var(--space-5);
     align-items: baseline;
-    padding-block: var(--space-5);
   }
 
   .site-footer__contact {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3) var(--space-4);
+  }
+
+  .site-footer__lang {
+    margin-left: auto;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 
   .site-footer a {
@@ -62,25 +75,18 @@ const contact = [
   }
 
   .site-footer__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    margin: 0 0 0 auto;
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    text-align: right;
-  }
-
-  .site-footer__lang {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    margin: 0;
   }
 
   @media (max-width: 40rem) {
-    .site-footer__meta {
+    .site-footer__row {
+      flex-direction: column;
+    }
+    .site-footer__lang {
       margin-left: 0;
-      text-align: left;
     }
   }
 </style>
