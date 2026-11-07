@@ -1,0 +1,16 @@
+{
+  "out": "./cover.png",
+  "path": "~/projects/ovalbot",
+  "status": "active",
+  "label": "// production · raspberry pi",
+  "title": "OvalBot",
+  "tagline": "TOP14 fixtures, scheduling alerts and ticket-resale watching — on a shelf, notifying by email and Telegram.",
+  "stats": [
+    { "label": "Backend", "value": "Rust · Axum" },
+    { "label": "Frontend", "value": "SvelteKit" },
+    { "label": "Target", "value": "arm64" }
+  ],
+  "footerLeft": "github.com/ficaud/Ovalbot",
+  "footerRight": "ovalbot.ficaud.xyz",
+  "focalHtmlFile": "./cover-focal.html"
+}

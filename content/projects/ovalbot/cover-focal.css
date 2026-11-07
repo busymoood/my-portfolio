@@ -1,0 +1,77 @@
+.ob-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ob-badge {
+  width: 150px;
+  display: block;
+  filter: drop-shadow(0 14px 30px rgb(0 0 0/50%));
+}
+
+.ob-card {
+  width: 462px;
+  background: #0a0a0b;
+  border: 1px solid #232329;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgb(0 0 0/45%);
+}
+
+.ob-head {
+  background: #e5bf03;
+  padding: 18px 24px;
+  color: #0a0a0b;
+}
+
+.ob-kicker {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.22em;
+}
+
+.ob-title {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 29px;
+  margin-top: 5px;
+}
+
+.ob-body {
+  padding: 20px 24px 22px;
+}
+
+.ob-match {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 24px;
+  color: #e8e6df;
+}
+
+.ob-match .vs {
+  color: #e5bf03;
+  font-size: 15px;
+  margin: 0 7px;
+}
+
+.ob-date {
+  margin-top: 5px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: #77777f;
+}
+
+.ob-btn {
+  display: inline-block;
+  margin-top: 16px;
+  background: #e5bf03;
+  color: #0a0a0b;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 15px;
+  padding: 9px 16px;
+  border-radius: 7px;
+}

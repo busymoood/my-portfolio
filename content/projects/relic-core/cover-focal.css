@@ -1,0 +1,56 @@
+.share-card {
+  width: 100%;
+  max-width: 470px;
+  max-height: 100%;
+  background: #fdfcf8;
+  border-radius: 18px;
+  padding: 30px 34px 24px;
+  box-shadow: 0 24px 60px rgb(0 0 0/45%);
+  text-align: center;
+}
+
+.share-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: #101014;
+}
+
+.share-head strong {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 27px;
+  letter-spacing: 0.02em;
+}
+
+.share-head span {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: #8b8b92;
+}
+
+.share-qr {
+  margin: 16px auto 14px;
+  width: 330px;
+  max-width: 92%;
+  display: block;
+}
+
+.share-line {
+  font-family: var(--font-mono);
+  font-size: 19px;
+  line-height: 1.45;
+  color: #26262e;
+  letter-spacing: 0.04em;
+}
+
+.share-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e7e5dd;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: #a8a8ad;
+}

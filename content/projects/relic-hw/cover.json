@@ -1,0 +1,16 @@
+{
+  "out": "./cover.jpg",
+  "path": "~/projects/relic-hw",
+  "status": "active",
+  "label": "// companion guide",
+  "title": "Relic Hardware",
+  "tagline": "From a bare board to shares that survive a decade: flashing, splitting, labelling, distributing.",
+  "stats": [
+    { "label": "Stack", "value": "MkDocs" },
+    { "label": "Chapters", "value": "9 pages" },
+    { "label": "Firmware", "value": "v1.7.3" }
+  ],
+  "footerLeft": "github.com/ficaud/relic-hw",
+  "footerRight": "ficaud.github.io/relic-hw",
+  "focalHtmlFile": "./cover-focal.html"
+}
