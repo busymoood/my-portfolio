@@ -46,34 +46,6 @@ Le container démarre dans `/workspace` (le repo monté). Tu y es utilisateur `d
 | `docker` | CLI Docker via socket hôte (build de l'image du site) |
 | `jq` | Traitement JSON |
 
-### NeoVim / LazyVim (première ouverture)
-
-Ta config hôte est montée ; le **premier** `nvim` déclenchera `lazy.nvim` pour
-installer / restaurer vos plugins (une fois, patientez ~1 min) :
-```sh
-nvim              # laisse la bootstrap finir
-:Lazy             # état des plugins
-```
-`lazy-lock.json` et l'état des plugins vivent dans `~/.local/share/nvim` —
-partagés avec l'hôte, mêmes versions des deux côtés ; mets à jour LazyVim
-comme d'habitude (`:Lazy update`).
-
-### OpenCode (agent)
-
-```sh
-cd /workspace && opencode
-```
-OpenCode lit automatiquement `AGENTS.md` (conventions du repo) et donne
-l'accès aux skills projet (`skill-creator`, `frontend-design`, `webapp-testing`)
-et aux commands :
-| Commande | Effet |
-|---|---|
-| `/check` | Validation santé : lint + schémas de contenu + build + résumé OK/ERREURS |
-| `/add-post <slug>` | Scaffold un billet de blog (brouillon par défaut) |
-| `/add-project <slug>` | Scaffold une fiche projet (frontmatter complet) |
-
-Un agent qui prend le relais : lire `.opencode/HANDOFF.md` (état + prochaines étapes).
-
 ## Travaux courants
 
 ### Compiler le CV en local (LaTeX)
@@ -87,6 +59,7 @@ latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error \
 latexmk -pvc -pdf -interaction=nonstopmode -halt-on-error -file-line-error \
         -output-directory=latex latex/my_cv.tex
 ```
+
 → `latex/my_cv.pdf` (ignoré par git). `latexmk -C ...` pour nettoyer.
 En CI, le workflow `deploy-pdf.yml` compile et **publie le PDF en GitHub Release**
 (tag `cv-<n>`). La CI du site télécharge la dernière Release dans
@@ -101,22 +74,6 @@ npm run lint       # astro check + validation des covers 16:9
 npm run build      # build statique dans dist/
 npm run preview    # sert dist/ en local
 ```
-
-### Contenus
-
-- **Projet** : `content/projects/<slug>/index.md` + une cover locale **16:9**
-  (`cover.png`/`cover.jpg`), générée par
-  `python3 scripts/cover/make_cover.py <slug>` à partir de
-  `cover.json` (+ `cover-focal.html`/`.css` optionnels). L'aperçu mobile
-  (`/tmp/opencode/cover-preview/<slug>-mobile.png`) permet de vérifier la
-  lisibilité à 400 px. `/add-project <slug>` scaffolde le dossier et le
-  frontmatter.
-- **Billet** : `content/blog/<slug>.md`, avec `lang: "en" | "fr"`. Un billet
-  vit sous une seule URL (`/blog/...` ou `/fr/blog/...`). `/add-post <slug>`
-  crée un brouillon (`draft: true`) par défaut ; un brouillon est visible en
-  `astro dev` mais exclu du build de production.
-- Les fiches projet sont rédigées en anglais ; le repli « traduction à venir »
-  est géré côté site pour le français.
 
 ### CI & image
 
@@ -160,13 +117,3 @@ Dans le dashboard Cloudflare (Zero Trust → Networks → Tunnels → Public
 Hostname), **Service** = `HTTP` → `http://portfolio-web:80` : le port doit
 être celui sur lequel écoute le conteneur (80 pour l'image nginx de prod ;
 si le site écoute sur un autre port, reporter ce port ici).
-
-## Conventions & ce qui est automatique
-
-- `AGENTS.md` : règles de contenu (frontmatter obligatoire, LaTeX, bilinguisme),
-  ce que les agents ne touchent pas sans validation. Lu par OpenCode au démarrage.
-- Skills projet dans `.opencode/skills/`, commands dans `.opencode/commands/`.
-- Commits **sans** artefacts : `latex/*.pdf/*.aux/*.log`, `node_modules`, `dist`,
-  `.env` — tout est dans `.gitignore`.
-- Ancien repo CV : `my-cv/` (backup local, ignoré par git — à supprimer quand
-  le nouveau repo est publié).
