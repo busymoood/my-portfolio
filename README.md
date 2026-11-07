@@ -105,7 +105,11 @@ npm run preview    # sert dist/ en local
 ### Contenus
 
 - **Projet** : `content/projects/<slug>/index.md` + une cover locale **16:9**
-  (`cover.png`/`cover.jpg`). `/add-project <slug>` scaffolde le dossier et le
+  (`cover.png`/`cover.jpg`), générée par
+  `python3 scripts/cover/make_cover.py <slug>` à partir de
+  `cover.json` (+ `cover-focal.html`/`.css` optionnels). L'aperçu mobile
+  (`/tmp/opencode/cover-preview/<slug>-mobile.png`) permet de vérifier la
+  lisibilité à 400 px. `/add-project <slug>` scaffolde le dossier et le
   frontmatter.
 - **Billet** : `content/blog/<slug>.md`, avec `lang: "en" | "fr"`. Un billet
   vit sous une seule URL (`/blog/...` ou `/fr/blog/...`). `/add-post <slug>`

@@ -87,9 +87,12 @@ pas de paraphrase naïve du README :
    Multi-arch arm64/amd64. 135 commits, CI ci/deploy + codecov. GPL-3.0.
    Demo : `https://ovalbot.ficaud.xyz/`
 
-Captures 16:9 dark mode : les projets embarquent des images (doc/img/, frontend
-static) et les démos en ligne sont visibles — capturer soi-même plutôt que de
-stocker à la hâte.
+Captures 16:9 dark mode : les covers sont désormais **générées** depuis
+`content/projects/<slug>/cover.json` par `scripts/cover/make_cover.py`
+(HTML + tokens du site + polices IBM Plex + Chromium/Playwright ; aperçu mobile
+400 px et garde-fou anti-débordement). Les assets focaux (QR, photo, badge) sont
+extraits des bannières d'origine et versionnés dans le dossier du projet.
+`npm run lint` vérifie toujours le 16:9 des fichiers produits.
 
 ## Comment vérifier ton travail
 

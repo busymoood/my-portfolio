@@ -129,7 +129,16 @@ cover: "./screenshot.png"   # image locale avec le projet
 
 Le corps du Markdown = description détaillée libre (contexte, ce que ça fait, choix techniques, captures insérées au fil du texte).
 
-**Convention captures d'écran** : ratio uniforme **16:9** pour les `cover`, nommage cohérent, rendu en dark mode ; si un projet n'a pas de capture utile, un placeholder sobre (carte typographique du nom du projet) plutôt qu'une grille hétérogène.
+**Convention covers** : ratio uniforme **16:9**, dark mode, généré par le script
+`scripts/cover/make_cover.py` (template HTML + tokens du site + polices IBM Plex
+auto-hébergées, rendu Chromium/Playwright). Chaque projet décrit sa bannière dans
+`content/projects/<slug>/cover.json` (titre, tagline, 3 stats max, footers) et,
+si besoin, un `cover-focal.html`/`cover-focal.css` pour la zone visuelle. La
+bannière est reconstruite par `python3 scripts/cover/make_cover.py <slug>` ; le
+générateur écrit aussi un aperçu 400 px dans `/tmp/opencode/cover-preview/` pour
+vérifier la lisibilité mobile et signale tout débordement. Sans asset focal
+disponible, il produit un placeholder typographique sobre (monogramme) plutôt
+qu'une composition improvisée.
 
 ### 3.3 Billets de blog — `content/blog/<slug>.md`
 
