@@ -80,7 +80,7 @@ deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR, rése
 
 ## Style visuel — rappel
 
-- Dark mode par défaut ; fond sombre profond, texte doux (pas de blanc pur).
+- **Thème clair disponible** : par défaut le site suit `prefers-color-scheme` (dark en repli) ; en-tête dark par défaut + bascule light/dark persistée (`localStorage`). Palette claire dérivée de kanagawa Lotus, définie dans `src/styles/tokens.css` (toutes les couleurs via variables — aucune couleur codée en dur dans les composants).
 - Une seule couleur d'accent (cyan/bleu ou vert doux) ; mono pour titres/tags/
   métadonnées/prompt décoratif, sans-serif lisible pour le corps de texte.
 - Interdits : effets CRT/scanlines, animations « machine à écrire », faux shell
