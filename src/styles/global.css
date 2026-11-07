@@ -24,6 +24,16 @@ body {
   line-height: var(--leading);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  /* Sticky footer: short pages keep the footer flush with the viewport bottom. */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Grow with the viewport so the footer sits below on short pages. */
+main {
+  flex-grow: 1;
 }
 
 h1,
