@@ -23,7 +23,7 @@ const ui = {
     'home.kicker': 'software engineer',
     'home.intro':
       'I build software that behaves predictably: firmware that never phones home, services that run on a shelf in my flat, and tools that explain themselves. This site is my CV, a few projects worth reading, and the occasional note.',
-    'home.cta.cv': 'Read my CV',
+    'home.cta.cv': 'Read my Resume',
     'home.cta.projects': 'Browse projects',
     'home.latest': 'Selected work',
     'cv.title': 'Curriculum vitae',
