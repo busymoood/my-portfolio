@@ -28,11 +28,15 @@ const links = [
       type="button"
       data-label-light={t('theme.toLight')}
       data-label-dark={t('theme.toDark')}
-      data-text-light={t('theme.light')}
-      data-text-dark={t('theme.dark')}
       aria-label={t('theme.toLight')}
     >
-      {t('theme.light')}
+      <svg class="theme-icon theme-icon--sun" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" />
+      </svg>
+      <svg class="theme-icon theme-icon--moon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.3 13.5A8.5 8.5 0 1 1 10.5 3.7a7 7 0 0 0 9.8 9.8z" />
+      </svg>
     </button>
     <a class="site-header__lang" href={switchHref} aria-label={t('lang.aria')} hreflang={otherLang}>
       {otherLang.toUpperCase()}
@@ -44,13 +48,10 @@ const links = [
   const button = document.querySelector('button.site-header__theme') as HTMLButtonElement | null;
   const root = document.documentElement;
 
-  /** Keep the toggle label + aria-label pointing at the theme it switches to. */
+  /** Keep the toggle aria-label pointing at the theme it switches to. */
   function syncToggle() {
     if (!button) return;
     const isLight = root.dataset.theme === 'light';
-    button.textContent = isLight
-      ? (button.dataset.textDark ?? 'dark')
-      : (button.dataset.textLight ?? 'light');
     button.setAttribute(
       'aria-label',
       isLight
@@ -153,19 +154,39 @@ const links = [
   }
 
   .site-header__theme {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
     border-left: 1px solid var(--color-border);
-    padding-left: var(--space-3);
+    padding: 0.35rem 0.55rem 0.35rem var(--space-3);
     background: none;
     color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
     cursor: pointer;
   }
 
   .site-header__theme:hover {
     color: var(--color-accent);
+  }
+
+  /* In dark mode the icon points at light (sun); in light mode, at dark (moon). */
+  .theme-icon {
+    display: none;
+  }
+
+  :global([data-theme='dark']) .site-header__theme .theme-icon--sun,
+  :global([data-theme='light']) .site-header__theme .theme-icon--moon {
+    display: block;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-theme='dark'])) .site-header__theme .theme-icon--moon {
+      display: block;
+    }
+
+    :global(:root:not([data-theme='dark'])) .site-header__theme .theme-icon--sun {
+      display: none;
+    }
   }
 
   .site-header__lang {
