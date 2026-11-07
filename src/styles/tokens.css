@@ -1,3 +1,13 @@
+/* Two palettes, one set of semantic variables.
+   Layer 1 — `:root` : dark (fallback for no CSS-support edge cases, and the
+                       explicit `[data-theme="dark"]` state keeps it without a
+                       second block).
+   Layer 2 — `@media (prefers-color-scheme: light)` : system choice, used when
+             the user has not forced a theme with the header toggle
+             (no-JS browsers included).
+   Layer 3 — `[data-theme="light"` / `"dark"]` : explicit choice, set before
+             first paint by the inline script in BaseLayout.astro. */
+
 :root {
   color-scheme: dark;
 
@@ -32,4 +42,39 @@
   --header-height: 3.75rem;
 
   --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* Kanagawa Lotus-derived light palette: warm cream, no pure white,
+   same soft green accent darkened for contrast on light ground. */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+
+    --color-bg: #f2f0e9;
+    --color-surface: #eceae1;
+    --color-surface-raised: #e5e2d7;
+    --color-border: #d6d3c6;
+    --color-border-strong: #beb9aa;
+    --color-text: #43444e;
+    --color-text-muted: #71747d;
+    --color-accent: #4c9658;
+    --color-accent-strong: #3d7a48;
+    --color-accent-dim: rgb(76 150 88 / 10%);
+  }
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --color-bg: #f2f0e9;
+  --color-surface: #eceae1;
+  --color-surface-raised: #e5e2d7;
+  --color-border: #d6d3c6;
+  --color-border-strong: #beb9aa;
+  --color-text: #43444e;
+  --color-text-muted: #71747d;
+  --color-accent: #4c9658;
+  --color-accent-strong: #3d7a48;
+  --color-accent-dim: rgb(76 150 88 / 10%);
 }

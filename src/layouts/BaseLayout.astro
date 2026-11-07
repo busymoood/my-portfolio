@@ -39,7 +39,33 @@ const locale = lang === 'fr' ? 'fr_FR' : 'en_GB';
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={locale} />
+    {/* Updated by the inline script below to match the active palette. */}
     <meta name="theme-color" content="#15161c" />
+    {/* Set before first paint: stored choice wins, otherwise follow the system. */}
+    <script is:inline>
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch {
+          /* private mode — the system preference applies */
+        }
+        const theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+        document.documentElement.dataset.theme = theme;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.setAttribute(
+            'content',
+            getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim(),
+          );
+        }
+      })();
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">{t('nav.skip')}</a>

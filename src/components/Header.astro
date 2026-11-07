@@ -23,11 +23,87 @@ const links = [
     <nav class="site-header__nav" aria-label="Main">
       {links.map((link) => <a href={link.href}>{link.label}</a>)}
     </nav>
+    <button
+      class="site-header__theme"
+      type="button"
+      data-label-light={t('theme.toLight')}
+      data-label-dark={t('theme.toDark')}
+      data-text-light={t('theme.light')}
+      data-text-dark={t('theme.dark')}
+      aria-label={t('theme.toLight')}
+    >
+      {t('theme.light')}
+    </button>
     <a class="site-header__lang" href={switchHref} aria-label={t('lang.aria')} hreflang={otherLang}>
       {otherLang.toUpperCase()}
     </a>
   </div>
 </header>
+
+<script>
+  const button = document.querySelector('button.site-header__theme') as HTMLButtonElement | null;
+  const root = document.documentElement;
+
+  /** Keep the toggle label + aria-label pointing at the theme it switches to. */
+  function syncToggle() {
+    if (!button) return;
+    const isLight = root.dataset.theme === 'light';
+    button.textContent = isLight
+      ? (button.dataset.textDark ?? 'dark')
+      : (button.dataset.textLight ?? 'light');
+    button.setAttribute(
+      'aria-label',
+      isLight
+        ? (button.dataset.labelDark ?? 'Switch to dark theme')
+        : (button.dataset.labelLight ?? 'Switch to light theme'),
+    );
+  }
+
+  function syncThemeColor() {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute(
+        'content',
+        getComputedStyle(root).getPropertyValue('--color-bg').trim(),
+      );
+    }
+  }
+
+  function applyTheme(theme: string) {
+    root.dataset.theme = theme;
+    syncThemeColor();
+    syncToggle();
+  }
+
+  if (button) {
+    syncToggle();
+    // Re-sync the browser-bar colour now that stylesheets are applied
+    // (the inline head script may run before tokens.css is parsed).
+    syncThemeColor();
+
+    button.addEventListener('click', () => {
+      const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+      applyTheme(next);
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        /* storage unavailable — choice applies to this visit only */
+      }
+    });
+
+    // Before an explicit choice is stored, keep following the system preference.
+    matchMedia('(prefers-color-scheme: light)').addEventListener('change', (event) => {
+      let stored = null;
+      try {
+        stored = localStorage.getItem('theme');
+      } catch {
+        /* storage unavailable */
+      }
+      if (stored === 'light' || stored === 'dark') return;
+      applyTheme(event.matches ? 'light' : 'dark');
+    });
+  }
+</script>
 
 <style>
   .site-header {
@@ -73,6 +149,22 @@ const links = [
   }
 
   .site-header__nav a:hover {
+    color: var(--color-accent);
+  }
+
+  .site-header__theme {
+    border: 0;
+    border-left: 1px solid var(--color-border);
+    padding-left: var(--space-3);
+    background: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+
+  .site-header__theme:hover {
     color: var(--color-accent);
   }
 

@@ -20,6 +20,10 @@ const ui = {
     'nav.home': 'Home',
     'lang.switch': 'Version française',
     'lang.aria': 'Change language',
+    'theme.toLight': 'Switch to light theme',
+    'theme.toDark': 'Switch to dark theme',
+    'theme.light': 'light',
+    'theme.dark': 'dark',
     'home.kicker': 'software engineer',
     'home.intro':
       'I build software that behaves predictably: firmware that never phones home, services that run on a shelf in my flat, and tools that explain themselves. This site is my CV, a few projects worth reading, and the occasional note.',
@@ -71,6 +75,10 @@ const ui = {
     'nav.home': 'Accueil',
     'lang.switch': 'English version',
     'lang.aria': 'Changer de langue',
+    'theme.toLight': 'Passer au thème clair',
+    'theme.toDark': 'Passer au thème sombre',
+    'theme.light': 'clair',
+    'theme.dark': 'sombre',
     'home.kicker': 'ingénieur logiciel',
     'home.intro':
       'Je construis des logiciels au comportement prévisible : un firmware qui n’appelle jamais la maison, des services qui tournent sur une étagère chez moi, et des outils qui s’expliquent. Ce site, c’est mon CV, quelques projets qui valent la lecture, et des notes à l’occasion.',
