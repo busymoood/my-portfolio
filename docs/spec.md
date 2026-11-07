@@ -1,7 +1,7 @@
 # Spécifications — Site Web Personnel (CV + Portfolio + Blog)
 
-**Version :** 0.4
-**Date :** 2026-11-06
+**Version :** 0.5
+**Date :** 2026-11-07
 
 **État du projet** — table tenue à jour par les agents à la fin de chaque phase ; en cas de divergence, cette table fait foi sur l'avancement (le reste du document décrit le produit, pas le planning) :
 
@@ -13,6 +13,7 @@
 | 3 — Blog | ✅ Réalisée | Billets routés par langue (une URL par billet), brouillons exclus du build de production (404 en prod, visibles en dev), extraits dans l'index, état vide et repli inter-langue ; blog vide au lancement |
 | 4 — Infra | ✅ Réalisée | `site.yml` : lint, build **amd64 + arm64** sur runners natifs, smoke test avant publication, merge du manifeste et push GHCR (package public) ; PDF téléchargé de la dernière Release `cv-*` (repli si absente) ; page `/cv` sans lien mort ; compose aligné sur l'image publiée et raccordé au réseau du tunnel Cloudflare existant. Pas de job de déploiement : la cible tire l'image, le tunnel est géré hors de cette stack. |
 | 5 — Qualité & lancement | ⏳ À faire | Audits, 404, sitemap, tunnel en prod, DNS `ficaud.xyz` |
+| + — Thème clair | ✅ Réalisée | Palette claire (kanagawa Lotus) dans `tokens.css` : `prefers-color-scheme` par défaut (dark en repli), override explicite `[data-theme]` posé par un script inline anti-FOUC dans `BaseLayout`, bouton de bascule dans le header avec i18n EN/FR, choix persisté (`localStorage`), `meta theme-color` synchronisé, couvertures 16:9 dark posées par bordure (aucun contenu retouché) |
 
 Remote : `busymoood/my-portfolio` (origine existante conservée). Voir §7 pour le détail des phases.
 
@@ -160,12 +161,12 @@ Textes d'interface (labels de nav, « Voir mon CV », etc.) dans des fichiers de
 | Domaine | Exigence |
 |---|---|
 | **Responsive** | Mobile-first ; lisible et agréable de 320 px à desktop large. Non négociable. |
-| **Thème** | **Dark mode par défaut.** Le clair est une évolution possible, pas une exigence V1. |
+| **Thème** | Dark et light, avec bascule dans l'en-tête. Par défaut : suit `prefers-color-scheme` (dark en repli). Choix explicite persisté (`localStorage`), appliqué avant le premier rendu (pas de flash). Le dark reste le repli canonique. |
 | **Performance** | Site statique, peu ou pas de JavaScript. Pas de bibliothèque UI lourde. Images optimisées. |
-| **Accessibilité** | Contrastes suffisants en dark mode, structure sémantique (landmarks, titres), focus visible. |
+| **Accessibilité** | Contrastes suffisants dans les deux thèmes, structure sémantique (landmarks, titres), focus visible. |
 | **SEO de base** | Titres/meta-description par page, Open Graph, sitemap.xml, robots.txt, URLs propres. Pas de stratégie SEO avancée. |
 | **Typographie** | Double visage : une police **à chasse fixe (mono)** pour les éléments « marques du terminal » (titre/nom, tags, métadonnées, prompt décoratif), une police **sans-serif lisible** pour le corps de texte — pour rester digeste pour une audience non technique. |
-| **Palette** | Inspirée des thèmes NeoVim modernes (ex. *tokyonight*, *kanagawa*) : fond sombre profond, texte doux (pas de blanc pur), **une couleur d'accent unique** (bleu/cyan ou vert doux) pour liens et mises en évidence. |
+| **Palette** | Inspirée des thèmes NeoVim modernes (ex. *tokyonight*, *kanagawa*) : fond sombre profond, texte doux (pas de blanc pur), **une couleur d'accent unique** (bleu/cyan ou vert doux) pour liens et mises en évidence. Le thème clair est dérivé de *kanagawa Lotus* : crème chaud, même accent foncé pour le contraste. Toutes les couleurs passent par les variables sémantiques de `src/styles/tokens.css`. |
 | **Direction artistique** | Style « terminal propre » : touches discrètes comme un prompt décoratif (`~`, `>`, chemin du breadcrumb en style path), bordures fines, blocs de code mis en valeur. **Éviter explicitement** : effets CRT/scanlines, animations de machine à écrire, faux shell interactif, surcharge de caractères techniques. |
 | **Fiabilité** | Déploiement automatique à chaque push sur la branche principale. |
 
