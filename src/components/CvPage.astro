@@ -1,5 +1,6 @@
 ---
-import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
 import { useTranslations, type Lang } from '../i18n/ui';
 import PageIntro from '../components/PageIntro.astro';
 
@@ -13,7 +14,16 @@ const t = useTranslations(lang);
 // The PDF is downloaded from the latest `cv-*` Release by the site CI into
 // public/pdf/ before `astro build`. When no Release exists yet, the embed
 // and the button would be dead: show a note instead.
-const pdfAvailable = existsSync('public/pdf/my_cv.pdf');
+const pdfPath = 'public/pdf/my_cv.pdf';
+const pdfAvailable = existsSync(pdfPath);
+
+// Nginx and Cloudflare can keep serving the previous PDF from the same URL.
+// A content hash in the query string makes every new release a new URL, so
+// caches cannot pin an outdated CV.
+const pdfVersion = pdfAvailable
+  ? createHash('sha256').update(readFileSync(pdfPath)).digest('hex').slice(0, 12)
+  : null;
+const pdfUrl = pdfVersion ? `/pdf/my_cv.pdf?v=${pdfVersion}` : null;
 ---
 
 <div class="container">
@@ -21,10 +31,10 @@ const pdfAvailable = existsSync('public/pdf/my_cv.pdf');
 
   <div class="cv">
     {
-      pdfAvailable ? (
+      pdfUrl ? (
         <>
           <div class="cv__actions">
-            <a class="button button--primary" href="/pdf/my_cv.pdf" download>
+            <a class="button button--primary" href={pdfUrl} download="my_cv.pdf">
               {t('cv.download')}
             </a>
             <p class="cv__note mono">{t('cv.note')}</p>
@@ -34,7 +44,7 @@ const pdfAvailable = existsSync('public/pdf/my_cv.pdf');
             <p class="cv__preview-label mono">{t('cv.preview')}</p>
             <embed
               class="cv__embed"
-              src="/pdf/my_cv.pdf"
+              src={pdfUrl}
               type="application/pdf"
               title={t('cv.title')}
             />
