@@ -43,7 +43,7 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 
 ```
 /                      → Accueil (présentation courte + points d'entrée)
-/cv                    → Page CV : résumé court + téléchargement du PDF (LaTeX compilé en CI)
+/cv                    → Page CV : aperçu du PDF + téléchargement (LaTeX compilé en CI)
 /projects              → Portfolio : grille/liste des projets
 /projects/<slug>       → Fiche détaillée d'un projet
 /blog                  → Index des billets (vide au lancement)
@@ -69,7 +69,7 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 
 **CV (`/cv`)**
 - **Source de vérité = fichier LaTeX** (`cv/cv-en.tex`), maintenu à la main et versionné dans le repo. Le PDF est **compilé dans la CI** (GitHub Actions, step sur image TeX Live) à chaque build → le PDF servi sur le site reflète toujours la source.
-- **Page HTML légère** (pas de copie complète du CV en HTML — double maintenance interdite) : 2-3 points clés en résumé, gros bouton « Télécharger le CV (PDF) », date de dernière mise à jour.
+- **Page HTML légère** (pas de copie complète du CV en HTML — double maintenance interdite) : **aperçu du PDF en lecteur natif** (`<embed>`), gros bouton « Télécharger le CV (PDF) » au-dessus, note mono. Sur mobile, le bouton reste visible et prioritaire (l'aperçu natif peut ne pas s'afficher sur iOS).
 - **Langues** : PDF **EN par défaut** (langue du site) ; variante FR compilée par le même step si `cv-fr.tex` fourni, repli EN sinon.
 - Date de mise à jour affichée (métadonnée du LaTeX).
 
@@ -106,7 +106,7 @@ latex/
   (action `xu-cheng/latex-action`) produit `my_cv.pdf` et le **publie en GitHub
   Release** avec tag `cv-<n>`. Le site n'a PAS à recompiler : la CI du site
   télécharge le PDF de la dernière Release dans `public/pdf/`.
-- Page `/cv` du site = résumé court + bouton de téléchargement (pas de copie HTML).
+- Page `/cv` du site = aperçu du PDF (lecteur natif) + bouton de téléchargement (pas de copie HTML).
 - Le PDF est **en anglais** par défaut (langue du site) ; la variante française est compilée en parallèle si `my_cv_fr.tex` existe.
 
 ### 3.2 Projets — `content/projects/<slug>/index.md`
