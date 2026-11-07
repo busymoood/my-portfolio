@@ -139,17 +139,27 @@ PDF fraîchement publié.
 
 ### Déploiement VPS
 
-La CI ne déploie pas. Le VPS tire l'image et la raccorde au réseau Docker du
-tunnel Cloudflare existant : voir **[`deploy/README.md`](deploy/README.md)**.
+La CI ne déploie pas : le VPS fait tourner **deux stacks Docker Compose**
+reliées par un réseau Docker — voir **[`deploy/README.md`](deploy/README.md)**.
+
+1. la **stack du tunnel** : un compose `cloudflared` dédié (hors de ce repo)
+   crée et gère le tunnel Cloudflare ;
+2. la **stack du site** (image GHCR) rejoint le **réseau Docker** de ce
+   compose : c'est le « tunnel network » — aucun `TUNNEL_TOKEN`, aucun port
+   publié sur l'hôte.
 
 ```sh
+docker network ls | grep cloudflared        # repérer le réseau, ex. cloudflared_default
+
 export TUNNEL_NETWORK=cloudflared_default   # réseau du compose cloudflared
 docker compose -f deploy/docker-compose.vps.yml pull
 docker compose -f deploy/docker-compose.vps.yml up -d --no-build
 ```
 
-Dans Cloudflare, le public hostname pointe vers `http://portfolio-web:80`.
-Aucun port n'est exposé sur le VPS, et aucun `TUNNEL_TOKEN` n'est nécessaire.
+Dans le dashboard Cloudflare (Zero Trust → Networks → Tunnels → Public
+Hostname), **Service** = `HTTP` → `http://portfolio-web:80` : le port doit
+être celui sur lequel écoute le conteneur (80 pour l'image nginx de prod ;
+si le site écoute sur un autre port, reporter ce port ici).
 
 ## Conventions & ce qui est automatique
 
