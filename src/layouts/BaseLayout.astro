@@ -16,7 +16,7 @@ interface Props {
 
 const { lang, title, description, noindex } = Astro.props;
 const t = useTranslations(lang);
-const pageTitle = title ? `${title} — ${t('site.title')}` : `${t('site.title')} — ${t('site.tagline')}`;
+const pageTitle = title ? `${title} — ${t('site.name')}` : t('site.name');
 const pageDescription = description ?? t('site.description');
 const canonical = new URL(localizePath(Astro.url.pathname, 'en'), Astro.site);
 const locale = lang === 'fr' ? 'fr_FR' : 'en_GB';

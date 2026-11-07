@@ -10,6 +10,7 @@ export const defaultLang: Lang = 'en';
 const ui = {
   en: {
     'site.title': 'Julien Fichet',
+    'site.name': 'Julien Fichet',
     'site.tagline': 'Software engineer with a taste for careful, self-hosted tools.',
     'site.description':
       'CV, portfolio and notes by Julien Fichet — software engineer building offline-first and self-hosted tools.',
@@ -63,6 +64,7 @@ const ui = {
   },
   fr: {
     'site.title': 'Julien Fichet',
+    'site.name': 'Julien Fichet',
     'site.tagline': 'Ingénieur logiciel, amateur d’outils soignés et auto-hébergés.',
     'site.description':
       'CV, portfolio et notes de Julien Fichet — ingénieur logiciel, outils offline-first et auto-hébergés.',
