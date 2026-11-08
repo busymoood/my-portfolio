@@ -1,25 +1,62 @@
+// .devcontainer/devcontainer.json — conteneur « devbox »
+// Source de vérité de l'environnement : devbox-install-agents.md (ne pas
+// configurer l'environnement à la main). Image publiée : busymoood/dotfiles-docker
+// (multi-arch). Les configs zsh/tmux/ssh sont clonées à chaque démarrage par
+// le bootstrap `onstart` depuis DOTFILES_REPO, et la config NeoVim/LazyVim
+// depuis NVIM_CONFIG_REPO (clone dans ~/.config/nvim, git pull aux suivants).
+// L'état des outils (plugins nvim, Mason, auth opencode, browsers Playwright)
+// persiste dans le volume `devbox-home`. Aucune clé privée ne vit dans le
+// conteneur — l'agent SSH de l'hôte est exposé par `devbox-agent-relay`
+// (image) : montage direct sur Docker natif, relais TCP sur Docker Desktop.
 {
-  "name": "myportfolio-dev",
-  "build": {
-    "dockerfile": "./Dockerfile",
-    "context": "."
-  },
-  // Features : CLI Docker (via socket de l'hôte) — gh est installé dans le Dockerfile
+  "name": "devbox",
+  "image": "ghcr.io/busymoood/dotfiles-docker:v0.6.0",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "workspaceFolder": "/workspace",
+  // Compléments sur l'image (absents d'elle) : Node 22 (build du site Astro),
+  // gh (GitHub CLI), client Docker via le socket de l'hôte.
   "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "overrideCommand": true,
-  "remoteUser": "dev",
-  // Configs hôtes montées dans le conteneur :
-  // nvim (config + plugins LazyVim) — lazygit — OpenCode (config + état/auth)
+  "containerEnv": {
+    // Variables fournies par .env (voir .env.example) : la CLI devcontainers
+    // ne lit pas les .env, lancer `./scripts/devbox-up.sh` qui les exporte.
+    // Clone SSH (clés via l'agent Bitwarden) ; accept-new : évite un blocage
+    // « host key verification » au clone non interactif du premier boot.
+    // TODO(dotfiles) : DOTFILES_REPO pointe sur le repo de l'IMAGE (aucun
+    // zsh/, tmux/ ni nvim/) → aucun symlink n'est créé. À remplacer par un
+    // vrai repo de dotfiles (ex: git@github.com:busymoood/zshrc.git) une fois
+    // son .zshrc rendu « conteneur-safe » (il exporte aujourd'hui
+    // SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock et charge oh-my-zsh).
+    "DOTFILES_REPO": "${localEnv:DOTFILES_REPO:}",
+    // Config NeoVim/LazyVim : dépôt privé → clone via l'agent SSH, prioritaire
+    // sur un éventuel dotfiles/nvim. "" = nvim nu.
+    "NVIM_CONFIG_REPO": "${localEnv:NVIM_CONFIG_REPO:git@github.com:Thejulfi/lazyvim-config.git}",
+    // cible du relais : vide = défaut de devbox-agent-relay (host.docker.internal:4242)
+    "DEVBOX_SSH_RELAY_TARGET": "${localEnv:DEVBOX_SSH_RELAY_TARGET:}",
+    "GIT_SSH_COMMAND": "ssh -o StrictHostKeyChecking=accept-new",
+    "SSH_AUTH_SOCK": "${localEnv:DEVBOX_SSH_AUTH_SOCK:/tmp/ssh-agent.sock}",
+    // Browsers Playwright dans le volume persistant (state devbox-home)
+    "PLAYWRIGHT_BROWSERS_PATH": "/home/dev/.local/ms-playwright"
+  },
   "mounts": [
-    "source=${localEnv:HOME}/.config/nvim,target=/home/dev/.config/nvim,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.local/share/nvim,target=/home/dev/.local/share/nvim,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.config/lazygit,target=/home/dev/.config/lazygit,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.config/opencode,target=/home/dev/.config/opencode,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.local/share/opencode,target=/home/dev/.local/share/opencode,type=bind,consistency=cached"
+    // Socket Bitwarden NON bindé ici : Docker Desktop (macOS) ne peut pas
+    // monter un socket Unix non-docker (erreur « /socket_mnt/… does not
+    // exist »). `devbox-agent-relay` (image) recrée le socket local depuis le
+    // relais TCP de l'hôte. Sur Docker natif, monter le socket et mettre
+    // SSH_AUTH_SOCK=/ssh-agent à la place.
+    // État persistant des outils, partagé avec les sessions devbox.sh
+    "source=devbox-home,target=/home/dev/.local,type=volume"
   ],
   "forwardPorts": [4321],
-  "postCreateCommand": "latexmk -v"
+  // Provisionnement du projet (socat, playwright, chromium) — une fois par
+  // création. Source unique : scripts/devbox-bootstrap.sh (partagé avec le
+  // docker-compose).
+  "postCreateCommand": "bash /workspace/scripts/devbox-bootstrap.sh create",
+  // Chaque démarrage : relais socat de l'agent SSH (socket périmé supprimé,
+  // sinon « Address already in use ») puis `onstart` (permissions du volume,
+  // dotfiles, config NeoVim ; il attend le socket ≤5 s).
+  "postStartCommand": "bash /workspace/scripts/devbox-bootstrap.sh start"
 }

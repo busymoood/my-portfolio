@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 
@@ -41,14 +42,16 @@ def load_tokens() -> str:
     return "\n".join(f"  {name}: {value};" for name, value in vars_)
 
 
-PLAYWRIGHT_BROWSERS = Path("/opt/ms-playwright")
-
-
 def find_chromium() -> str | None:
-    """Devcontainer keeps browsers in /opt/ms-playwright; search for one."""
-    if not PLAYWRIGHT_BROWSERS.is_dir():
+    """Locate a chromium binary from the Playwright browsers cache.
+
+    The dev container sets PLAYWRIGHT_BROWSERS_PATH (persisted in the
+    `devbox-home` volume); fall back to the legacy /opt/ms-playwright path.
+    """
+    root = Path(os.environ.get("PLAYWRIGHT_BROWSERS_PATH", "/opt/ms-playwright"))
+    if not root.is_dir():
         return None
-    candidates = sorted(PLAYWRIGHT_BROWSERS.glob("chromium-*/chrome-linux*/chrome"))
+    candidates = sorted(root.glob("chromium-*/chrome-linux*/chrome"))
     return str(candidates[-1]) if candidates else None
 
 

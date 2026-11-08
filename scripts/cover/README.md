@@ -19,7 +19,8 @@ npm run cover -- relic-core                         # same as the first form
 ```
 
 The script renders `template.html` in Chromium (Playwright is available in the
-devcontainer, browsers in `/opt/ms-playwright`), using the site's own tokens
+devcontainer, browsers in `$PLAYWRIGHT_BROWSERS_PATH` — `/home/vscode/.local/ms-playwright`
+dans le volume `devbox-home` ; repli sur `/opt/ms-playwright`), using the site's own tokens
 (`src/styles/tokens.css`, dark `:root`) and self-hosted IBM Plex fonts, so a
 banner always matches the live palette and typography.
 

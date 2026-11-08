@@ -21,18 +21,33 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
 
 ## Environnement du container (tu y es)
 
-- Ubuntu 24.04 + **Node LTS 22** + Python 3 (scripts des skills) + toolchain
-  **LaTeX/latexmk** + **neovim** (dernière stable) + **lazygit** (latest au build)
-  + **opencode** (npm `@latest`).
-- **Outils agent** : **CLI Docker** (via socket hôte monté — tu peux builder
-  l'image du site), **gh** (GitHub CLI : Releases du PDF, estado de la CI),
-  **jq**, **Playwright + Chromium** (browsers partagés dans /opt/ms-playwright
-  — pour la skill `webapp-testing` et les audits Phase 5).
-- Configs montées depuis l'hôte : `~/.config/nvim` + `~/.local/share/nvim`
-  (LazyVim de Julien), `~/.config/lazygit`, OpenCode `~/.config/opencode` +
-  `~/.local/share/opencode` (auth de l'hôte).
-- Outils en ligne : `nvim`, `lazygit`, `opencode`, `latexmk`, `node`, `npm`,
-  `python3`, `playwright`, `gh`, `docker`, `jq`.
+- **Image devbox** `ghcr.io/busymoood/dotfiles-docker:v0.4.1` : Ubuntu 24.04 +
+  **Node LTS 22** (feature) + Python 3 + **neovim** (dernière stable) +
+  **lazygit** + **opencode** + tmux/zsh/rg/fd/fzf/jq/build-essential.
+  **Pas de toolchain LaTeX** dans le conteneur : le PDF du CV est compilé en CI.
+- **Configs** : `~/.config/nvim` est cloné au démarrage depuis
+  `NVIM_CONFIG_REPO` (LazyVim de Julien, dépôt privé → agent SSH requis), avec
+  `git pull` à chaque boot. Les éventuelles configs zsh/tmux viendraient de
+  `DOTFILES_REPO` (placeholder actuel sans config → shell/tmux par défaut).
+- **Outils agent** : **CLI Docker** (socket hôte — tu peux builder l'image du
+  site), **gh** (GitHub CLI : Releases du PDF, état de la CI), **jq**,
+  **Playwright + Chromium** (browsers dans `~/.local/ms-playwright`, volume
+  `devbox-home` — skill `webapp-testing`, couvertures, audits Phase 5).
+- **Persistance** : tout l'état outillé (plugins nvim, Mason, auth opencode,
+  clé Supermaven, browsers) vit dans le volume `devbox-home` monté sur
+  `~/.local`. `scripts/devbox-bootstrap.sh` (playwright, chromium, Node) est
+  la source unique appelée par le devcontainer **et** le docker-compose.
+- **Variables** : `.env` (copié depuis `.env.example`, ignoré par git) porte
+  `DOTFILES_REPO` / `NVIM_CONFIG_REPO`. `docker compose` le lit nativement ;
+  pour la CLI devcontainers (qui ignore les `.env`), utiliser
+  `./scripts/devbox-up.sh`.
+- **Agent SSH** : géré par `devbox-agent-relay` (image) — montage direct sur
+  Docker natif, relais TCP sur Docker Desktop. Si `ssh-add -l` échoue dans le
+  conteneur alors que Bitwarden est déverrouillé : `devbox-agent-relay doctor`
+  puis `devbox-agent-relay start` (ou
+  `bash /workspace/scripts/devbox-bootstrap.sh start`).
+- Outils en ligne : `nvim`, `lazygit`, `opencode`, `node`, `npm`, `python3`,
+  `playwright`, `gh`, `docker`, `jq`.
 
 ## Ce qui t'attend : la Phase 1 « Squelette »
 

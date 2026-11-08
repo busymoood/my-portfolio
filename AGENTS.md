@@ -8,6 +8,25 @@ Spécifications complètes : **`docs/spec.md`** (versionnée avec le repo, tenue
 jour au fil des phases — la table « État du projet » en tête fait foi).
 **Agent qui démarre ici : lire d'abord `.opencode/HANDOFF.md`.**
 
+## Environnement de dev
+
+Utilise le conteneur devbox : suivre `devbox-install-agents.md` (ne pas
+configurer l'environnement à la main). Image épinglée
+`ghcr.io/busymoood/dotfiles-docker:v0.6.0` · utilisateur `dev` · workspace
+`/workspace` · configs zsh/tmux/ssh (si fournies) clonées par `onstart` depuis
+`DOTFILES_REPO` (placeholder actuel :
+`git@github.com:busymoood/dotfiles-docker.git` — ce repo **n'a pas** de
+`zsh/.zshrc`/`tmux/.tmux.conf`, donc rien n'est lié) · config NeoVim/LazyVim
+clonée depuis `NVIM_CONFIG_REPO=git@github.com:Thejulfi/lazyvim-config.git` dans
+`~/.config/nvim` · état persistant dans le volume `devbox-home`
+(`/home/dev/.local`) · git via l'agent SSH de l'hôte (aucune clé privée dans
+le conteneur). L'agent SSH est géré par `devbox-agent-relay` (image) ; Node 22,
+Playwright/Chromium et le reste du surplus projet sont posés par
+`scripts/devbox-bootstrap.sh` (appelé par le devcontainer et par le compose) ;
+`gh` et la CLI Docker viennent des features du devcontainer (`docker compose`
+seul ne les fournit pas). Pas de toolchain LaTeX dans le conteneur : le PDF du
+CV reste compilé en CI.
+
 ## Structure du repo
 
 ```text
@@ -25,7 +44,12 @@ src/
 public/pdf/                 # PDF du CV (téléchargé de la Release en CI, jamais commité)
 .opencode/                  # config OpenCode, skills (skill-creator…), commands
 .devcontainer/
-  devcontainer.json Dockerfile
+  devcontainer.json        # image publiée (ne plus y construire de Dockerfile)
+.env.example               # variables du conteneur (copier en .env, gitignored)
+scripts/
+  devbox-bootstrap.sh      # playwright/chromium/node (devcontainer & compose)
+  devbox-up.sh             # charge .env puis `devcontainer up`
+  cover/                   # générateur de couvertures 16:9 (Playwright)
 latex/Makefile             # build/watch/clean latexmk
 Dockerfile nginx.conf                      # site : build + runtime
 docker-compose.yml                         # dev container local

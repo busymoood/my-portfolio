@@ -24,6 +24,8 @@ latex/my_cv.aux
 
 # === Secrets (jamais commités) ===
 .env
+.env.*
+!.env.example
 deploy/.env
 deploy/docker-compose.override.yml
 
