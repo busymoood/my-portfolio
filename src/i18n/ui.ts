@@ -14,6 +14,7 @@ const ui = {
     'site.tagline': 'Software engineer with a taste for careful, self-hosted tools.',
     'site.description':
       'CV, portfolio and notes by Julien Fichet — software engineer building offline-first and self-hosted tools.',
+    'nav.about': 'About',
     'nav.cv': 'CV',
     'nav.projects': 'Projects',
     'nav.blog': 'Blog',
@@ -47,6 +48,7 @@ const ui = {
     'projects.demo': 'Demo',
     'projects.back': 'All projects',
     'projects.langFallback': 'This project sheet is in English for now — a French translation is coming.',
+    'about.langFallback': 'This page is in English for now — a French translation is coming.',
     'blog.title': 'Blog',
     'blog.intro': 'Notes on firmware, small services and the tooling around them.',
     'blog.empty': 'No posts yet. The first ones are being written.',
@@ -68,6 +70,7 @@ const ui = {
     'site.tagline': 'Ingénieur logiciel, amateur d’outils soignés et auto-hébergés.',
     'site.description':
       'CV, portfolio et notes de Julien Fichet — ingénieur logiciel, outils offline-first et auto-hébergés.',
+    'nav.about': 'À propos',
     'nav.cv': 'CV',
     'nav.projects': 'Projets',
     'nav.blog': 'Blog',
@@ -101,6 +104,7 @@ const ui = {
     'projects.demo': 'Démo',
     'projects.back': 'Tous les projets',
     'projects.langFallback': 'Cette fiche est en anglais pour l’instant — la traduction française arrive.',
+    'about.langFallback': 'Cette page est en anglais pour l’instant — la traduction française arrive.',
     'blog.title': 'Blog',
     'blog.intro': 'Notes sur le firmware, les petits services et l’outillage qui va autour.',
     'blog.empty': 'Pas encore de billet. Les premiers sont en écriture.',

@@ -1,7 +1,7 @@
 # Spécifications — Site Web Personnel (CV + Portfolio + Blog)
 
-**Version :** 0.5
-**Date :** 2026-11-07
+**Version :** 0.6
+**Date :** 2026-11-08
 
 **État du projet** — table tenue à jour par les agents à la fin de chaque phase ; en cas de divergence, cette table fait foi sur l'avancement (le reste du document décrit le produit, pas le planning) :
 
@@ -14,6 +14,7 @@
 | 4 — Infra | ✅ Réalisée | `site.yml` : lint, build **amd64 + arm64** sur runners natifs, smoke test avant publication, merge du manifeste et push GHCR (package public) ; PDF téléchargé de la dernière Release `cv-*` (repli si absente) ; page `/cv` sans lien mort ; compose aligné sur l'image publiée et raccordé au réseau du tunnel Cloudflare existant. Pas de job de déploiement : la cible tire l'image, le tunnel est géré hors de cette stack. |
 | 5 — Qualité & lancement | ⏳ À faire | Audits, 404, sitemap, tunnel en prod, DNS `ficaud.xyz` |
 | + — Thème clair | ✅ Réalisée | Palette claire (kanagawa Lotus) dans `tokens.css` : `prefers-color-scheme` par défaut (dark en repli), override explicite `[data-theme]` posé par un script inline anti-FOUC dans `BaseLayout`, bouton de bascule dans le header avec i18n EN/FR, choix persisté (`localStorage`), `meta theme-color` synchronisé, couvertures 16:9 dark posées par bordure (aucun contenu retouché) |
+| + — Page About | ✅ Réalisée | Page bilingue `/about` + `/fr/about` depuis `content/about/<lang>/index.md`, collection `about`, entrée « About » en tête du menu principal, header mobile passé sur deux lignes pour absorber le 4ᵉ lien |
 
 Remote : `busymoood/my-portfolio` (origine existante conservée). Voir §7 pour le détail des phases.
 
@@ -44,6 +45,7 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 
 ```
 /                      → Accueil (présentation courte + points d'entrée)
+/about                 → Page « à propos » (parcours, expertise, philosophie, liens)
 /cv                    → Page CV : aperçu du PDF + téléchargement (LaTeX compilé en CI)
 /projects              → Portfolio : grille/liste des projets
 /projects/<slug>       → Fiche détaillée d'un projet
@@ -67,6 +69,10 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 - Court paragraphe de présentation (3-4 lignes max). **Sans photo/avatar** — présentation purement typographique.
 - 2-3 appels à l'action : « Voir mon CV », « Explorer mes projets ».
 - Optionnel : mise en avant des 3 derniers projets (cartes).
+
+**À propos (`/about`)**
+- Page de présentation : parcours, domaines d'expertise, philosophie technique, projets sélectionnés et liens de contact.
+- Contenu Markdown par langue dans `content/about/<lang>/index.md` (EN/FR), rendu par le même layout que les autres pages de contenu ; repli EN avec mention « traduction à venir » si la version FR manque.
 
 **CV (`/cv`)**
 - **Source de vérité = fichier LaTeX** (`cv/cv-en.tex`), maintenu à la main et versionné dans le repo. Le PDF est **compilé dans la CI** (GitHub Actions, step sur image TeX Live) à chaque build → le PDF servi sur le site reflète toujours la source.

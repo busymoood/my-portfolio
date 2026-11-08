@@ -26,6 +26,17 @@ const projects = defineCollection({
     }),
 });
 
+const about = defineCollection({
+  loader: glob({ pattern: '**/index.md', base: './content/about' }),
+  schema: z.object({
+    title: z.string().min(1, 'title is required'),
+    summary: z
+      .string()
+      .min(1, 'summary is required')
+      .max(160, 'summary must fit on one line (160 chars max)'),
+  }),
+});
+
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/blog' }),
   schema: z.object({
@@ -40,4 +51,4 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { projects, blog };
+export const collections = { projects, about, blog };

@@ -11,6 +11,7 @@ const otherLang: Lang = lang === 'en' ? 'fr' : 'en';
 const switchHref = localizePath(stripLocale(Astro.url.pathname), otherLang);
 
 const links = [
+  { href: localizePath('/about', lang), label: t('nav.about') },
   { href: localizePath('/cv', lang), label: t('nav.cv') },
   { href: localizePath('/projects', lang), label: t('nav.projects') },
   { href: localizePath('/blog', lang), label: t('nav.blog') },
@@ -130,6 +131,7 @@ const links = [
     letter-spacing: -0.01em;
     color: var(--color-text);
     text-decoration: none;
+    white-space: nowrap;
   }
 
   .site-header__brand:hover {
@@ -203,13 +205,34 @@ const links = [
     color: var(--color-accent);
   }
 
-  @media (max-width: 30rem) {
-    .site-header__nav {
-      gap: var(--space-2);
+  @media (max-width: 34rem) {
+    .site-header__inner {
+      flex-wrap: wrap;
+      row-gap: var(--space-1);
+      padding-block: var(--space-1);
     }
 
     .site-header__brand {
       font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    /* Keep the brand and the two toggles on the first row, and give the
+       four navigation links their own full-width row on small screens. */
+    .site-header__nav {
+      order: 4;
+      flex-basis: 100%;
+      margin-left: 0;
+      gap: var(--space-3);
+    }
+
+    .site-header__theme {
+      order: 2;
+      margin-left: auto;
+    }
+
+    .site-header__lang {
+      order: 3;
     }
   }
 </style>

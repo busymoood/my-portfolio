@@ -1,0 +1,14 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AboutPage from '../components/AboutPage.astro';
+
+const about = await getEntry('about', 'en');
+if (!about) {
+  throw new Error('Missing content/about/en/index.md');
+}
+---
+
+<BaseLayout lang="en" title={about.data.title} description={about.data.summary}>
+  <AboutPage lang="en" about={about} />
+</BaseLayout>
