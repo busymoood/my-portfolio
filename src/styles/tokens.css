@@ -11,7 +11,7 @@
 :root {
   color-scheme: dark;
 
-  /* Kanagawa-inspired, soft green accent — the only chromatic colour on the site. */
+  /* Kanagawa-inspired, warm red accent — the only chromatic colour on the site. */
   --color-bg: #15161c;
   --color-surface: #1c1e26;
   --color-surface-raised: #23262f;
@@ -19,9 +19,9 @@
   --color-border-strong: #3d424f;
   --color-text: #d8d5ca;
   --color-text-muted: #9296a0;
-  --color-accent: #a3c98b;
-  --color-accent-strong: #c0dfa8;
-  --color-accent-dim: rgb(163 201 139 / 12%);
+  --color-accent: #f3433c;
+  --color-accent-strong: #ff7b72;
+  --color-accent-dim: rgb(243 67 60 / 12%);
 
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -45,7 +45,7 @@
 }
 
 /* Kanagawa Lotus-derived light palette: warm cream, no pure white,
-   same soft green accent darkened for contrast on light ground. */
+   same warm red accent darkened for contrast on light ground. */
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
@@ -58,9 +58,9 @@
     --color-border-strong: #beb9aa;
     --color-text: #43444e;
     --color-text-muted: #71747d;
-    --color-accent: #4c9658;
-    --color-accent-strong: #3d7a48;
-    --color-accent-dim: rgb(76 150 88 / 10%);
+    --color-accent: #b83734;
+    --color-accent-strong: #882223;
+    --color-accent-dim: rgb(184 55 52 / 10%);
   }
 }
 
@@ -74,7 +74,7 @@
   --color-border-strong: #beb9aa;
   --color-text: #43444e;
   --color-text-muted: #71747d;
-  --color-accent: #4c9658;
-  --color-accent-strong: #3d7a48;
-  --color-accent-dim: rgb(76 150 88 / 10%);
+  --color-accent: #b83734;
+  --color-accent-strong: #882223;
+  --color-accent-dim: rgb(184 55 52 / 10%);
 }
