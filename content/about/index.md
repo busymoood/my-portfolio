@@ -15,10 +15,10 @@ Since 2024 I have been an embedded software engineer at **Cogelec** (LEGRAND Gro
 
 ## What I work with
 
-**Languages** — C, C++, Rust, Python  
-**Embedded** — STM32, ESP32, Zephyr, FreeRTOS
-**Security** — AES, SHA, RSA, ECC
-**Tooling** — Git, GitLab CI/CD, GitHub Actions, Docker, CMake, GDB/OpenOCD, Neovim
+* **Languages** — C, C++, Rust, Python  
+* **Embedded** — STM32, ESP32, Zephyr, FreeRTOS
+* **Security** — AES, SHA, RSA, ECC
+* **Tooling** — Git, GitLab CI/CD, GitHub Actions, Docker, CMake, GDB/OpenOCD, Neovim
 
 ## Personal projects
 
