@@ -50,6 +50,11 @@
     // État persistant des outils, partagé avec les sessions devbox.sh
     "source=devbox-home,target=/home/dev/.local,type=volume"
   ],
+  // Ports publiés vers l'hôte macOS. `forwardPorts` ne sert qu'aux clients                                               
+  // VS Code ; la CLI devcontainers ne forwarde rien.                                                                     
+  // 127.0.0.1 = accessible uniquement depuis le Mac.                                                                     
+  // Pour le LAN (téléphone, autre machine), utiliser 0.0.0.0:4321:4321.                                                  
+  "runArgs": ["--publish", "127.0.0.1:4321:4321"],                                                                        
   "forwardPorts": [4321],
   // Provisionnement du projet (socat, playwright, chromium) — une fois par
   // création. Source unique : scripts/devbox-bootstrap.sh (partagé avec le
