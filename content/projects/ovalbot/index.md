@@ -13,6 +13,8 @@ cover: "./cover.png"
 
 OvalBot is a web app that watches resale listings for TOP14 rugby matches, so you no longer have to keep refreshing your favourite team's website.
 
+It's actually up and running right now at [ovalbot.ficaux.xyz](https://ovalbot.ficaud.xyz/), you can take a look, create an account (if all the spot haven't been filled yet) and start using it.
+
 ## Why
 
 Some teams, such as Stade Rochelais, are so popular that getting a ticket for a home match is very difficult.

@@ -6,9 +6,7 @@
   "title": "Relic Hardware",
   "tagline": "From a bare board to shares that survive a decade: flashing, splitting, labelling, distributing.",
   "stats": [
-    { "label": "Stack", "value": "MkDocs" },
-    { "label": "Chapters", "value": "9 pages" },
-    { "label": "Firmware", "value": "v1.7.3" }
+    { "label": "Stack", "value": "MkDocs"}
   ],
   "footerLeft": "github.com/ficaud/relic-hw",
   "footerRight": "ficaud.github.io/relic-hw",

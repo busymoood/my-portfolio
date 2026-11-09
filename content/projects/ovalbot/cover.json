@@ -2,13 +2,12 @@
   "out": "./cover.png",
   "path": "~/projects/ovalbot",
   "status": "active",
-  "label": "// production · raspberry pi",
+  "label": "// Your TOP14 favourite team's assistant",
   "title": "OvalBot",
-  "tagline": "TOP14 fixtures, scheduling alerts and ticket-resale watching — on a shelf, notifying by email and Telegram.",
+  "tagline": "A bot can notify you about upcoming matches and get you resale tickets.",
   "stats": [
     { "label": "Backend", "value": "Rust · Axum" },
-    { "label": "Frontend", "value": "SvelteKit" },
-    { "label": "Target", "value": "arm64" }
+    { "label": "Frontend", "value": "SvelteKit" }
   ],
   "footerLeft": "github.com/ficaud/Ovalbot",
   "footerRight": "ovalbot.ficaud.xyz",

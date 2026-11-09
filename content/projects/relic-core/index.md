@@ -25,7 +25,7 @@ Most people who grew up with the internet aren't yet on the verge of death, so t
 
 Your crypto assets will be gone forever. Your social media accounts will stay up and running, and all the other things you've initiated in your digital life will probably keep running—until someone takes care of them, or until they don't.
 
-The core idea of relic is to make this powerful technology available to everyone, giving you full ownership and control over your most sensitive information—all of this without relying on any third party or cloud service that could suffer a leak or shut down overnight.
+The core idea of Relic is to give everyone the ability to share secrets with others without the fear that they'll be used against them. It works like a Horcrux in Harry Potter: you can share your most sensitive secrets with people you trust, and unlike a single piece of your bank password, none of them can recover it easily—not until they come together to reconstruct the secret.
 
 ## How it works
 

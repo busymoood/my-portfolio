@@ -6,9 +6,7 @@
   "title": "Relic Core",
   "tagline": "A secret split into five shares; any three reconstruct it. The ESP32 never touches the internet.",
   "stats": [
-    { "label": "Scheme", "value": "3-of-5" },
-    { "label": "Runtime", "value": "Zephyr 4.5" },
-    { "label": "Boards", "value": "3" }
+    { "label": "OS", "value": "Zephyr" }
   ],
   "footerLeft": "github.com/ficaud/relic-core",
   "footerRight": "ficaud.github.io/relic-core",
