@@ -1,7 +1,7 @@
 ---
 title: "Relic Core"
 summary: "Offline ESP32 QR-code based secret-sharing device."
-status: "actif"
+status: "active"
 period: "Jul – Oct 2026"
 languages: ["C", "C++"]
 repo: "https://github.com/ficaud/relic-core"

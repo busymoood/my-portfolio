@@ -1,15 +1,10 @@
 ---
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
-import { useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 import PageIntro from '../components/PageIntro.astro';
 
-interface Props {
-  lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = useTranslations(lang);
+const t = useTranslations();
 
 // The PDF is downloaded from the latest `cv-*` Release by the site CI into
 // public/pdf/ before `astro build`. When no Release exists yet, the embed

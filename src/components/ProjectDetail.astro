@@ -2,35 +2,26 @@
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import { localizePath, useTranslations, type Lang } from '../i18n/ui';
-import { projectSlug } from '../lib/slugs';
+import { useTranslations } from '../i18n/ui';
 import Breadcrumb from './Breadcrumb.astro';
 import PageIntro from './PageIntro.astro';
 
 interface Props {
-  lang: Lang;
   project: CollectionEntry<'projects'>;
 }
 
-const { lang, project } = Astro.props;
-const t = useTranslations(lang);
+const { project } = Astro.props;
+const t = useTranslations();
 const { Content } = await render(project);
 ---
 
-<Breadcrumb lang={lang} items={[{ label: t('projects.back'), href: '/projects' }, { label: project.data.title }]} />
+<Breadcrumb items={[{ label: t('projects.back'), href: '/projects' }, { label: project.data.title }]} />
 
 <div class="container">
   <PageIntro title={project.data.title} intro={project.data.summary} />
 
-  {lang === 'fr' && (
-    <p class="project-lang-note mono">
-      {t('projects.langFallback')}{' '}
-      <a href={`/projects/${projectSlug(project)}`}>English ↗</a>
-    </p>
-  )}
-
   <p class="project-meta mono">
-    <span class="tag project-meta__status" class:list={[{ 'is-archived': project.data.status === 'archive' }]}>
+    <span class="tag project-meta__status" class:list={[{ 'is-archived': project.data.status === 'archived' }]}>
       {t(`projects.status.${project.data.status}`)}
     </span>
     <span>{project.data.period}</span>
@@ -48,7 +39,7 @@ const { Content } = await render(project);
   </div>
 
   <p class="project-back mono">
-    <a href={localizePath('/projects', lang)}>← {t('projects.back')}</a>
+    <a href="/projects">← {t('projects.back')}</a>
   </p>
 </div>
 
@@ -60,15 +51,6 @@ const { Content } = await render(project);
     gap: var(--space-2) var(--space-4);
     max-width: var(--measure);
     margin: 0 0 var(--space-4);
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
-  }
-
-  .project-lang-note {
-    max-width: var(--measure);
-    margin: 0 0 var(--space-4);
-    padding: var(--space-1) 0 var(--space-1) var(--space-3);
-    border-left: 2px solid var(--color-border-strong);
     color: var(--color-text-muted);
     font-size: 0.8rem;
   }

@@ -1,42 +1,20 @@
 ---
 import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import { useTranslations, type Lang } from '../i18n/ui';
 import PageIntro from './PageIntro.astro';
 
 interface Props {
-  lang: Lang;
   about: CollectionEntry<'about'>;
-  fallback?: boolean;
 }
 
-const { lang, about, fallback = false } = Astro.props;
-const t = useTranslations(lang);
+const { about } = Astro.props;
 const { Content } = await render(about);
 ---
 
 <div class="container">
   <PageIntro title={about.data.title} intro={about.data.summary} />
 
-  {fallback && (
-    <p class="about-lang-note mono">
-      {t('about.langFallback')}{' '}
-      <a href="/about">English ↗</a>
-    </p>
-  )}
-
   <div class="prose article">
     <Content />
   </div>
 </div>
-
-<style>
-  .about-lang-note {
-    max-width: var(--measure);
-    margin: 0 0 var(--space-4);
-    padding: var(--space-1) 0 var(--space-1) var(--space-3);
-    border-left: 2px solid var(--color-border-strong);
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
-  }
-</style>

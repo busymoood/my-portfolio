@@ -11,8 +11,8 @@ const projects = defineCollection({
         .string()
         .min(1, 'summary is required')
         .max(160, 'summary must fit on one line (160 chars max)'),
-      // Content identifiers are language-neutral; labels are translated in the UI.
-      status: z.enum(['actif', 'archive']),
+      // Status identifiers stay stable in content; labels are rendered by the UI.
+      status: z.enum(['active', 'archived']),
       period: z.string().min(1, 'period is required (e.g. "2025" or "2024 — present")'),
       languages: z.array(z.string().min(1)).min(1, 'languages must list at least one language'),
       repo: z.httpUrl('repo must be a full https:// URL'),
@@ -41,9 +41,6 @@ const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/blog' }),
   schema: z.object({
     title: z.string().min(1, 'title is required'),
-    // A post lives in exactly one language and is built under exactly one URL
-    // (`/blog/...` for EN, `/fr/blog/...` for FR). No duplicated content.
-    lang: z.enum(['en', 'fr']),
     date: z.coerce.date(),
     tags: z.array(z.string().min(1)),
     summary: z.string().min(1, 'summary is required'),

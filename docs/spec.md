@@ -1,7 +1,7 @@
 # Spécifications — Site Web Personnel (CV + Portfolio + Blog)
 
-**Version :** 0.6
-**Date :** 2026-11-08
+**Version :** 0.7
+**Date :** 2026-11-09
 
 **État du projet** — table tenue à jour par les agents à la fin de chaque phase ; en cas de divergence, cette table fait foi sur l'avancement (le reste du document décrit le produit, pas le planning) :
 
@@ -15,8 +15,11 @@
 | 5 — Qualité & lancement | ⏳ À faire | Audits, 404, sitemap, tunnel en prod, DNS `ficaud.xyz` |
 | + — Thème clair | ✅ Réalisée | Palette claire (kanagawa Lotus) dans `tokens.css` : `prefers-color-scheme` par défaut (dark en repli), override explicite `[data-theme]` posé par un script inline anti-FOUC dans `BaseLayout`, bouton de bascule dans le header avec i18n EN/FR, choix persisté (`localStorage`), `meta theme-color` synchronisé, couvertures 16:9 dark posées par bordure (aucun contenu retouché) |
 | + — Page About | ✅ Réalisée | Page bilingue `/about` + `/fr/about` depuis `content/about/<lang>/index.md`, collection `about`, entrée « About » en tête du menu principal, header mobile passé sur deux lignes pour absorber le 4ᵉ lien |
+| + — English-only | ✅ Réalisée | Suppression de la locale FR (`/fr/*`), du sélecteur de langue et des replis « traduction à venir » ; modèle de contenu simplifié (`lang` retiré du blog, statuts `active`/`archived`) ; redirections 301 `/fr/*` → anglais dans `nginx.conf` |
 
 Remote : `busymoood/my-portfolio` (origine existante conservée). Voir §7 pour le détail des phases.
+
+> Note : les lignes historiques du tableau mentionnent la locale française ; elle a été retirée depuis (voir la ligne « + — English-only »).
 
 ---
 
@@ -57,8 +60,8 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 
 ### 2.2 Navigation
 
-- **Header fixe, minimaliste** : logo/titre (gauche) — liens `CV · Projets · Blog` (droite) + sélecteur de langue FR/EN.
-- **Footer** : liens de contact (email, GitHub, LinkedIn), mention légale/copyright, langue.
+- **Header fixe, minimaliste** : logo/titre (gauche) — liens `CV · Projets · Blog` (droite).
+- **Footer** : liens de contact (email, GitHub, LinkedIn), mention légale/copyright.
 - Fil d'Ariane léger sur les pages de détail (projet, billet) pour revenir à l'index.
 - Mobilité : les liens se replient dans un menu burger simple si nécessaire (3 liens suffisent — on peut aussi rester en header compact sans burger).
 
@@ -72,12 +75,12 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 
 **À propos (`/about`)**
 - Page de présentation : parcours, domaines d'expertise, philosophie technique, projets sélectionnés et liens de contact.
-- Contenu Markdown par langue dans `content/about/<lang>/index.md` (EN/FR), rendu par le même layout que les autres pages de contenu ; repli EN avec mention « traduction à venir » si la version FR manque.
+- Contenu Markdown dans `content/about/index.md`, rendu par le même layout que les autres pages de contenu.
 
 **CV (`/cv`)**
 - **Source de vérité = fichier LaTeX** (`cv/cv-en.tex`), maintenu à la main et versionné dans le repo. Le PDF est **compilé dans la CI** (GitHub Actions, step sur image TeX Live) à chaque build → le PDF servi sur le site reflète toujours la source.
 - **Page HTML légère** (pas de copie complète du CV en HTML — double maintenance interdite) : **aperçu du PDF en lecteur natif** (`<embed>`), gros bouton « Télécharger le CV (PDF) » au-dessus, note mono. Sur mobile, le bouton reste visible et prioritaire (l'aperçu natif peut ne pas s'afficher sur iOS).
-- **Langues** : PDF **EN par défaut** (langue du site) ; variante FR compilée par le même step si `cv-fr.tex` fourni, repli EN sinon.
+- **Langue** : le PDF est en anglais, comme le reste du site ; il n'y a pas de variante française.
 - Date de mise à jour affichée (métadonnée du LaTeX).
 
 **Portfolio (`/projects`)**
@@ -88,7 +91,7 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 - Contenu écrit **manuellement** : un fichier Markdown par projet.
 - Titre, description détaillée, contexte/motivation, stack technique, défis/points notables.
 - Liens : repo GitHub, démo éventuelle, captures d'écran.
-- Bloc « métadonnées » en tête de fiche : statut (actif/archivé), période, langages principaux, repo URL.
+- Bloc « métadonnées » en tête de fiche : statut (active/archived), période, langages principaux, repo URL.
 
 **Blog (`/blog`, `/blog/<slug>`)**
 - Index : liste des billets par date (titre, date, éventuels tags, extrait).
@@ -103,8 +106,7 @@ Le site est la **présence en ligne unique** de Julien Fichet. Il sert deux audi
 
 ```text
 latex/
-├── my_cv.tex       # template Harshibar (MIT) adapté — EN, défaut (déjà existant)
-└── my_cv_fr.tex    # variante FR (optionnelle — repli EN si absente)
+└── my_cv.tex       # template Harshibar (MIT) adapté — EN (déjà existant)
 ```
 
 - **Réutilisation de l'existant** : le repo d'origine (`Thejulfi/my-cv` — backup local `my-cv/`)
@@ -114,7 +116,7 @@ latex/
   Release** avec tag `cv-<n>`. Le site n'a PAS à recompiler : la CI du site
   télécharge le PDF de la dernière Release dans `public/pdf/`.
 - Page `/cv` du site = aperçu du PDF (lecteur natif) + bouton de téléchargement (pas de copie HTML).
-- Le PDF est **en anglais** par défaut (langue du site) ; la variante française est compilée en parallèle si `my_cv_fr.tex` existe.
+- Le PDF est **en anglais**, comme le reste du site.
 
 ### 3.2 Projets — `content/projects/<slug>/index.md`
 
@@ -124,7 +126,7 @@ Un dossier par projet, fichier Markdown avec **frontmatter** :
 ---
 title: "Nom du projet"
 summary: "Une ligne (utilisée dans les cartes du portfolio)"
-status: "actif | archivé"
+status: "active | archived"
 period: "2025"
 languages: ["Python", "TypeScript"]
 repo: "https://github.com/.../<repo>"
@@ -151,7 +153,6 @@ qu'une composition improvisée.
 ```yaml
 ---
 title: ""
-lang: "en"      # "en" | "fr" — un billet vit sous /blog/… (en) ou /fr/blog/… (fr)
 date: "2026-11-06"
 tags: []
 summary: ""     # extrait pour l'index
@@ -159,15 +160,15 @@ draft: true     # true = brouillon visible en dev, exclu du build de production
 ---
 ```
 
-Purement Markdown. Un billet = une langue = une URL (pas de duplication ;
-repli « traduction à venir » sur l'index de l'autre langue). Aucun article au
+Purement Markdown. Un billet = une URL (`/blog/<slug>`). Aucun article au
 lancement.
 
-### 3.4 Traductions d'interface
+### 3.4 Textes d'interface
 
-Textes d'interface (labels de nav, « Voir mon CV », etc.) dans des fichiers de traduction `fr`/`en`. Pour les contenus : **CV avec PDF EN par défaut** (variante FR optionnelle via `cv-fr.tex`), **projets en FR et EN avec fallback** ; **blog en une seule langue au départ** (celle du billet, librement FR ou EN).
-
-**Fallback i18n des contenus** : publier un projet ou un billet en une seule langue est acceptable ; sur l'autre locale, un affichage de repli propre (lien vers la version d'origine + mention « traduction à venir ») plutôt que de dupliquer systématiquement — évite la double maintenance à chaque publication.
+Labels de nav, boutons et messages dans un catalogue unique de chaînes anglaises
+(`src/i18n/ui.ts`). Le site est **100 % anglais** : pas de variante française,
+pas de repli inter-langue. Les anciennes URLs `/fr/*` redirigent en 301 vers
+leur équivalent anglais.
 
 ---
 
@@ -204,7 +205,7 @@ Textes d'interface (labels de nav, « Voir mon CV », etc.) dans des fichiers de
 **Générateur : Astro (sortie statique)**
 - Contenu = fichiers : blog et projets via *Content Collections* (Markdown + frontmatter), CV via JSON. Ajouter un billet = créer un fichier `.md`, c'est tout.
 - Zéro JS par défaut côté client → léger, s'aligne avec les exigences perf/SEO.
-- i18n supporté au niveau du routing.
+- Site en anglais uniquement ; les URLs héritées `/fr/*` sont redirigées en 301.
 
 **Containerisation**
 - **`Dockerfile` multi-stage** : build (Node → `astro build`) puis exécution minimale (`nginx:alpine`) servant les fichiers statiques. Image finale de quelques Mo.
@@ -296,13 +297,13 @@ myPortfolio/               # nouveau repo (init local fait, remote à créer)
 
 ### 7.3 Projets initiaux du portfolio (matière de la Phase 2)
 
-Les **3 fiches** à créer (via `/add-project`, en anglais par défaut, description détaillée). Matière première extraite des README — à approfondir dans le dev container (lecture des doc/, CHANGELOG, historique git, captures) avant rédaction :
+Les **3 fiches** à créer (via `/add-project`, en anglais, description détaillée). Matière première extraite des README — à approfondir dans le dev container (lecture des doc/, CHANGELOG, historique git, captures) avant rédaction :
 
 | # | Repo | Ce que c'est (seed) | Frontmatter cible |
 |---|---|---|---|
-| 1 | **`ficaud/relic-core`** | **Firmware ESP32 (Zephyr RTOS v4.5, C)** implémentant *Shamir's Secret Sharing* sur GF(2⁸) — secrets (mots de passe, seed phrases) découpés en 5 parts, 3 requises pour restaurer. **100% offline** (AP Wi-Fi + portail web captif), QR codes (génération Nayuki réduite ; décodage via ses forks `relic-quirc` & `relic-zxing-cpp`), web flasher navigateur, démo **WASM** hébergée sur GitHub Pages. CI build + coverage. 201 commits, GPL-3.0. | langs `["C", "Zephyr"]`, demo : `https://ficaud.github.io/relic-core/`, status actif |
-| 2 | **`ficaud/relic-hw`** | **Docs MkDocs** (GitHub Pages) : guide pas-à-pas pour débutants construisant le boîtier Relic physique qui héberge relic-core. Sœur du projet 1 — lien croisé entre les deux fiches. 54 commits, Python/MkDocs + CI Pages. | langs `["Python", "MkDocs"]`, demo : `https://ficaud.github.io/relic-hw`, status actif |
-| 3 | **`ficaud/Ovalbot`** | **App production en service** : Rust/Axum + SvelteKit + SQLite, **hébergée sur Raspberry Pi arm64**. Surveille le TOP14 (dates de matchs + revente de places), notifie (Resend + bot Telegram), coffre-fort de credentials boutique (AES-256-GCM/HKDF), scanner + checkout bot en Phases, waitlist 10 personnes. Multi-arch arm64/amd64. En ligne sur `ovalbot.ficaud.xyz` (même famille de domaine que le site). 135 commits, CI ci/deploy + codecov, GPL-3.0. | langs `["Rust", "TypeScript"]`, repo + demo : `https://ovalbot.ficaud.xyz/`, status actif |
+| 1 | **`ficaud/relic-core`** | **Firmware ESP32 (Zephyr RTOS v4.5, C)** implémentant *Shamir's Secret Sharing* sur GF(2⁸) — secrets (mots de passe, seed phrases) découpés en 5 parts, 3 requises pour restaurer. **100% offline** (AP Wi-Fi + portail web captif), QR codes (génération Nayuki réduite ; décodage via ses forks `relic-quirc` & `relic-zxing-cpp`), web flasher navigateur, démo **WASM** hébergée sur GitHub Pages. CI build + coverage. 201 commits, GPL-3.0. | langs `["C", "Zephyr"]`, demo : `https://ficaud.github.io/relic-core/`, status active |
+| 2 | **`ficaud/relic-hw`** | **Docs MkDocs** (GitHub Pages) : guide pas-à-pas pour débutants construisant le boîtier Relic physique qui héberge relic-core. Sœur du projet 1 — lien croisé entre les deux fiches. 54 commits, Python/MkDocs + CI Pages. | langs `["Python", "MkDocs"]`, demo : `https://ficaud.github.io/relic-hw`, status active |
+| 3 | **`ficaud/Ovalbot`** | **App production en service** : Rust/Axum + SvelteKit + SQLite, **hébergée sur Raspberry Pi arm64**. Surveille le TOP14 (dates de matchs + revente de places), notifie (Resend + bot Telegram), coffre-fort de credentials boutique (AES-256-GCM/HKDF), scanner + checkout bot en Phases, waitlist 10 personnes. Multi-arch arm64/amd64. En ligne sur `ovalbot.ficaud.xyz` (même famille de domaine que le site). 135 commits, CI ci/deploy + codecov, GPL-3.0. | langs `["Rust", "TypeScript"]`, repo + demo : `https://ovalbot.ficaud.xyz/`, status active |
 
 **À faire dans le container (Phase 2, par l'agent)** :
 1. Ciler en profondeur chaque repo (README + `doc/`, CHANGELOG, workflows, histoire git) pour du contenu technique vérifié — pas de paraphrase du README.
@@ -318,4 +319,4 @@ Les **3 fiches** à créer (via `/add-project`, en anglais par défaut, descript
 2. ~~PDF du CV~~ **Tranché : CV LaTeX existant (`latex/my_cv.tex`), workflow `deploy-pdf.yml` déjà en place → PDF publié en GitHub Release ; le site télécharge la dernière Release.** (voir 3.1)
 3. ~~Contact~~ **Tranché : email simple affiché, pas de formulaire ; captcha reporté** (voir 6). Reste (mineur) : affichage en clair ou obfusqué, à trancher à l'implémentation.
 4. ~~Photo/avatar à l'accueil~~ **Tranché : non** — accueil sans photo, texte/typographie comme élément principal.
-5. ~~Langue par défaut~~ **Tranché : anglais par défaut à la racine `/`, français sous `/fr/`** avec sélecteur FR/EN dans le header et le footer.
+5. ~~Langue du site~~ **Tranché : anglais uniquement à la racine `/`** — la locale française a été retirée, les anciennes URLs `/fr/*` redirigent en 301 vers l'anglais.

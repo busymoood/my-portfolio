@@ -1,12 +1,7 @@
 ---
-import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 
-interface Props {
-  lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = useTranslations(lang);
+const t = useTranslations();
 const year = new Date().getFullYear();
 const contact = [
   { href: 'mailto:julien@ficaud.xyz', label: 'julien@ficaud.xyz' },
@@ -21,9 +16,6 @@ const contact = [
       <nav class="site-footer__contact" aria-label={t('footer.contact')}>
         {contact.map((item) => <a href={item.href}>{item.label}</a>)}
       </nav>
-      <a class="site-footer__lang" href={localizePath('/', lang === 'en' ? 'fr' : 'en')}>
-        {t('lang.switch')}
-      </a>
     </div>
     <p class="site-footer__meta">
       {t('footer.rights').replace('{year}', String(year))} · {t('footer.built')}
@@ -57,12 +49,6 @@ const contact = [
     gap: var(--space-3) var(--space-4);
   }
 
-  .site-footer__lang {
-    margin-left: auto;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-
   .site-footer a {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
@@ -84,9 +70,6 @@ const contact = [
   @media (max-width: 40rem) {
     .site-footer__row {
       flex-direction: column;
-    }
-    .site-footer__lang {
-      margin-left: 0;
     }
   }
 </style>

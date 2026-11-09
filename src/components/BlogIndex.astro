@@ -1,44 +1,25 @@
 ---
 import { getCollection } from 'astro:content';
-import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 import { postSlug } from '../lib/slugs';
 import { formatDate } from '../lib/dates';
 
-interface Props {
-  lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = useTranslations(lang);
-const otherLang: Lang = lang === 'en' ? 'fr' : 'en';
+const t = useTranslations();
 
 // Drafts are never listed in production; they stay visible in `astro dev`,
 // flagged as drafts, so the writing loop can be checked locally.
-const visible = (await getCollection('blog')).filter(
-  (post) => !import.meta.env.PROD || !post.data.draft,
-);
-
-// One post, one language, one URL: each index only lists its own locale.
-const posts = visible
-  .filter((post) => post.data.lang === lang)
+const posts = (await getCollection('blog'))
+  .filter((post) => !import.meta.env.PROD || !post.data.draft)
   .sort(
     (a, b) =>
       b.data.date.getTime() - a.data.date.getTime() || postSlug(a).localeCompare(postSlug(b)),
   );
-
-const otherPosts = visible.filter((post) => post.data.lang === otherLang);
 ---
 
 {
   posts.length === 0 ? (
     <div class="empty-state">
       <p class="empty mono">{t('blog.empty')}</p>
-      {otherPosts.length > 0 && (
-        <p class="fallback mono">
-          {t('blog.fallback')}{' '}
-          <a href={localizePath('/blog', otherLang)}>{t('blog.fallbackLink')}</a>
-        </p>
-      )}
     </div>
   ) : (
     <ul class="post-list">
@@ -46,9 +27,9 @@ const otherPosts = visible.filter((post) => post.data.lang === otherLang);
         <li>
           <div class="post-list__row">
             <time class="post-list__date mono" datetime={post.data.date.toISOString()}>
-              {formatDate(post.data.date, lang)}
+              {formatDate(post.data.date)}
             </time>
-            <a class="post-list__title" href={localizePath(`/blog/${postSlug(post)}`, lang)}>
+            <a class="post-list__title" href={`/blog/${postSlug(post)}`}>
               {post.data.title}
             </a>
             <span class="post-list__tags mono">
@@ -140,17 +121,6 @@ const otherPosts = visible.filter((post) => post.data.lang === otherLang);
   .empty::before {
     content: '> ';
     color: var(--color-accent);
-  }
-
-  .fallback {
-    margin: 0;
-    color: var(--color-text-muted);
-    font-size: 0.85rem;
-  }
-
-  .fallback::before {
-    content: '// ';
-    color: var(--color-border-strong);
   }
 
   @media (max-width: 40rem) {

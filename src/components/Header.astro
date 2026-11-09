@@ -1,26 +1,19 @@
 ---
-import { localizePath, stripLocale, useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 
-interface Props {
-  lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = useTranslations(lang);
-const otherLang: Lang = lang === 'en' ? 'fr' : 'en';
-const switchHref = localizePath(stripLocale(Astro.url.pathname), otherLang);
+const t = useTranslations();
 
 const links = [
-  { href: localizePath('/about', lang), label: t('nav.about') },
-  { href: localizePath('/cv', lang), label: t('nav.cv') },
-  { href: localizePath('/projects', lang), label: t('nav.projects') },
-  { href: localizePath('/blog', lang), label: t('nav.blog') },
+  { href: '/about', label: t('nav.about') },
+  { href: '/cv', label: t('nav.cv') },
+  { href: '/projects', label: t('nav.projects') },
+  { href: '/blog', label: t('nav.blog') },
 ];
 ---
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-header__brand" href={localizePath('/', lang)}>Julien</a>
+    <a class="site-header__brand" href="/">Julien</a>
     <nav class="site-header__nav" aria-label="Main">
       {links.map((link) => <a href={link.href}>{link.label}</a>)}
     </nav>
@@ -39,9 +32,6 @@ const links = [
         <path d="M20.3 13.5A8.5 8.5 0 1 1 10.5 3.7a7 7 0 0 0 9.8 9.8z" />
       </svg>
     </button>
-    <a class="site-header__lang" href={switchHref} aria-label={t('lang.aria')} hreflang={otherLang}>
-      {otherLang.toUpperCase()}
-    </a>
   </div>
 </header>
 
@@ -191,20 +181,6 @@ const links = [
     }
   }
 
-  .site-header__lang {
-    padding-left: var(--space-3);
-    border-left: 1px solid var(--color-border);
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    text-decoration: none;
-    letter-spacing: 0.04em;
-  }
-
-  .site-header__lang:hover {
-    color: var(--color-accent);
-  }
-
   @media (max-width: 34rem) {
     .site-header__inner {
       flex-wrap: wrap;
@@ -217,7 +193,7 @@ const links = [
       white-space: nowrap;
     }
 
-    /* Keep the brand and the two toggles on the first row, and give the
+    /* Keep the brand and the theme toggle on the first row, and give the
        four navigation links their own full-width row on small screens. */
     .site-header__nav {
       order: 4;
@@ -229,10 +205,6 @@ const links = [
     .site-header__theme {
       order: 2;
       margin-left: auto;
-    }
-
-    .site-header__lang {
-      order: 3;
     }
   }
 </style>

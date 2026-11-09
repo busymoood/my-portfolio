@@ -1,17 +1,14 @@
 ---
-import { localizePath, type Lang } from '../i18n/ui';
-
 interface Crumb {
   label: string;
   href?: string;
 }
 
 interface Props {
-  lang: Lang;
   items: Crumb[];
 }
 
-const { lang, items } = Astro.props;
+const { items } = Astro.props;
 ---
 
 <nav class="breadcrumb mono" aria-label="Breadcrumb">
@@ -19,7 +16,7 @@ const { lang, items } = Astro.props;
   {items.map((item) => (
     <span class="breadcrumb__item">
       <span class="breadcrumb__sep" aria-hidden="true">/</span>
-      {item.href ? <a href={localizePath(item.href, lang)}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+      {item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
     </span>
   ))}
 </nav>

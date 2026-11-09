@@ -1,7 +1,7 @@
 # AGENTS.md — Conventions du projet « myPortfolio » (ex-my-cv)
 
-Site personnel : **CV + portfolio de projets + blog**, en anglais (défaut, racine `/`)
-et français (`/fr/`). Public cible : recruteurs ET pairs. Style : « terminal propre »
+Site personnel : **CV + portfolio de projets + blog**, en anglais uniquement
+(racine `/`). Public cible : recruteurs ET pairs. Style : « terminal propre »
 inspiré des thèmes NeoVim (fond sombre, mono pour les accents, sobre).
 
 Spécifications complètes : **`docs/spec.md`** (versionnée avec le repo, tenue à
@@ -31,12 +31,12 @@ CV reste compilé en CI.
 
 ```text
 latex/                      # CV en LaTeX (source de vérité du PDF)
-  my_cv.tex                 #   template Harshibar (MIT), adapté — EN (défaut)
-  my_cv_fr.tex              #   variante FR (optionnelle — repli EN)
+  my_cv.tex                 #   template Harshibar (MIT), adapté — EN
 .github/workflows/
   deploy-pdf.yml            # CI existante : build PDF → GitHub Release (tag cv-<n>)
   site.yml                  # CI du site (Phase 4) : image → GHCR → deploy VPS
 content/
+  about/index.md            # page About
   projects/<slug>/index.md  # une fiche par projet + captures
   blog/<slug>.md            # un fichier par billet
 src/
@@ -59,11 +59,8 @@ deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR, rése
 ## Règles de contenu (non négociables)
 
 1. **Un billet de blog = `content/blog/<slug>.md`**, frontmatter obligatoire :
-   `title`, `lang` (`en`|`fr`), `date` (ISO `YYYY-MM-DD`), `tags`, `summary`,
-   `draft`.
-   - **Un billet = une langue = une URL** : `en` sous `/blog/<slug>`, `fr` sous
-     `/fr/blog/<slug>` ; pas de duplication. L'index de l'autre langue affiche
-     un repli « traduction à venir » avec un lien vers la version d'origine.
+   `title`, `date` (ISO `YYYY-MM-DD`), `tags`, `summary`, `draft`.
+   - **Un billet = une URL** : `/blog/<slug>`.
    - Nouveau billet = `draft: true` par défaut ; ne jamais passer à `draft: false`
      sans l'accord explicite de Julien.
    - Les brouillons sont visibles en `astro dev` (badge) et **exclus du build de
@@ -71,7 +68,7 @@ deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR, rése
    - Le slug est en kebab-case, stable après publication (ne pas renommer un slug
      publié — les URLs sont maintenues).
 2. **Une fiche projet = `content/projects/<slug>/index.md`**, frontmatter
-   obligatoire : `title`, `summary` (une ligne), `status` (`actif`|`archive`),
+   obligatoire : `title`, `summary` (une ligne), `status` (`active`|`archived`),
    `period`, `languages` (tableau), `repo` (URL GitHub), `demo` (URL ou null),
    `cover` (image locale 16:9, dark mode).
    - Page = description détaillée libre : contexte, ce que ça fait, choix
@@ -79,9 +76,9 @@ deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR, rése
 3. **Le CV est en LaTeX** (`latex/my_cv.tex`). Ne jamais produire une version HTML du
    CV complet (double maintenance interdite) ; la page `/cv` du site est un résumé
    court + bouton de téléchargement du PDF.
-4. **Bilinguisme** : textes d'interface en FR et EN (fichiers de traduction).
-   Contenus FR/EN avec repli propre autorisé (« traduction à venir »), plutôt que
-   de produire des traductions bâclées.
+4. **Langue** : le site est **100 % anglais** — pas de contenu ni d'interface
+   français, pas de sélecteur de langue. Les anciennes URLs `/fr/*` sont
+   redirigées en 301 vers leur équivalent anglais par `nginx.conf`.
 5. **LaTeX** : le PDF du CV est compilé uniquement dans la CI (workflow
    `deploy-pdf.yml`, action texlive). Ne jamais commiter un `.pdf` généré.
    Le site télécharge le PDF de la dernière GitHub Release — pas de recompilation

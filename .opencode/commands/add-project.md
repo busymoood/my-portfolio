@@ -12,7 +12,7 @@ Consignes :
    ---
    title: "<nom du projet>"
    summary: "<une ligne, carte du portfolio>"
-   status: "actif"   # ou "archivé"
+   status: "active"   # ou "archived"
    period: "<aaaa>"
    languages: ["<...>"]
    repo: "https://github.com/<utilisateur>/<repo>"

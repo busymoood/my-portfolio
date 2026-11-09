@@ -1,12 +1,7 @@
 ---
-import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 
-interface Props {
-  lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = useTranslations(lang);
+const t = useTranslations();
 ---
 
 <div class="container">
@@ -17,7 +12,7 @@ const t = useTranslations(lang);
     <p class="notfound__code mono" aria-hidden="true">404</p>
     <h1>{t('notfound.title')}</h1>
     <p class="notfound__body">{t('notfound.body')}</p>
-    <a class="button" href={localizePath('/', lang)}>{t('notfound.cta')}</a>
+    <a class="button" href="/">{t('notfound.cta')}</a>
   </div>
 </div>
 

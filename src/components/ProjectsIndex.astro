@@ -1,17 +1,16 @@
 ---
 import { getCollection } from 'astro:content';
-import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 import { projectSlug } from '../lib/slugs';
 import ProjectCard from './ProjectCard.astro';
 
 interface Props {
-  lang: Lang;
   /** Keep only the first N entries (used by the home page highlights). */
   limit?: number;
 }
 
-const { lang, limit } = Astro.props;
-const t = useTranslations(lang);
+const { limit } = Astro.props;
+const t = useTranslations();
 
 // Curated order: flagships first, then the companion guide. Slugs not listed
 // here keep the alphabetical fallback, so adding a project stays a one-file job.
@@ -37,9 +36,8 @@ if (limit) projects = projects.slice(0, limit);
     <div class="project-grid">
       {projects.map((project) => (
         <ProjectCard
-          lang={lang}
           project={project}
-          href={localizePath(`/projects/${projectSlug(project)}`, lang)}
+          href={`/projects/${projectSlug(project)}`}
         />
       ))}
     </div>

@@ -6,8 +6,8 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
 
 ## Où tu en es
 
-- **Spécifications** : v0.4 validées, versionnées dans le repo — **`docs/spec.md`**
-  (CV + portfolio + blog, bilingue EN défaut `/` + FR `/fr/`, thème terminal
+- **Spécifications** : v0.7 validées, versionnées dans le repo — **`docs/spec.md`**
+  (CV + portfolio + blog, en anglais uniquement, thème terminal
   propre façon NeoVim, Astro statique, Docker + Cloudflare Tunnel).
   **La table « État du projet » en tête de la spec fait foi sur l'avancement** ;
   la mettre à jour à chaque fin de phase.
@@ -63,7 +63,7 @@ Objectif : site Astro navigable avec contenus factices, build vert.
 2. Content Collections avec **schémas zod** stricts pour `projects` (frontmatter
    : `title, summary, status, period, languages, repo, demo, cover`) et `blog`
    (`title, date, tags, summary, draft`) — voir `AGENTS.md` « Règles de contenu ».
-3. Layouts + navigation (header : `CV · Projets · Blog` + sélecteur FR/EN) et
+3. Layouts + navigation (header : `CV · Projets · Blog`) et
    **design tokens CSS** (fond sombre profond, texte doux, UNE couleur d'accent
    cyan/bleu ou vert doux, mono pour titres/tags, sans-serif pour le corps).
    La skill `frontend-design` (dispo via le tool `skill`) est là pour ça.

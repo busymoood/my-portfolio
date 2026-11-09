@@ -1,16 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 
 interface Props {
-  lang: Lang;
   project: CollectionEntry<'projects'>;
   href: string;
 }
 
-const { lang, project, href } = Astro.props;
-const t = useTranslations(lang);
+const { project, href } = Astro.props;
+const t = useTranslations();
 ---
 
 <article class="project-card">
@@ -22,7 +21,7 @@ const t = useTranslations(lang);
     <p class="project-card__summary">{project.data.summary}</p>
     <p class="project-card__meta mono">
       <span>{project.data.languages.join(' / ')}</span>
-      <span class:list={['project-card__status', { 'is-archived': project.data.status === 'archive' }]}>
+      <span class:list={['project-card__status', { 'is-archived': project.data.status === 'archived' }]}>
         {t(`projects.status.${project.data.status}`)}
       </span>
     </p>

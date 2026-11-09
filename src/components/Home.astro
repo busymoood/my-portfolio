@@ -1,13 +1,8 @@
 ---
-import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 import ProjectsIndex from './ProjectsIndex.astro';
 
-interface Props {
-  lang: Lang;
-}
-
-const { lang } = Astro.props;
-const t = useTranslations(lang);
+const t = useTranslations();
 const featured = 3;
 ---
 
@@ -20,8 +15,8 @@ const featured = 3;
       <p>{t('home.intro')}</p>
     </div>
     <div class="hero__actions">
-      <a class="button button--primary" href={localizePath('/cv', lang)}>{t('home.cta.cv')}</a>
-      <a class="button" href={localizePath('/projects', lang)}>{t('home.cta.projects')}</a>
+      <a class="button button--primary" href="/cv">{t('home.cta.cv')}</a>
+      <a class="button" href="/projects">{t('home.cta.projects')}</a>
     </div>
   </div>
 </section>
@@ -29,7 +24,7 @@ const featured = 3;
 <section class="featured">
   <div class="container">
     <h2 class="section-title mono">{t('home.latest')}</h2>
-    <ProjectsIndex lang={lang} limit={featured} />
+    <ProjectsIndex limit={featured} />
   </div>
 </section>
 

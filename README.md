@@ -1,11 +1,11 @@
 # myPortfolio
 
 Site personnel **CV + portfolio + blog** — CV en LaTeX, portfolio de projets détaillés,
-blog en Markdown. Anglais par défaut (racine `/`), français sous `/fr/`.
+blog en Markdown. Site en anglais uniquement (racine `/`).
 Déploiement : image Docker multi-arch + **Cloudflare Tunnel** (aucun port public).
 
-> **Statut : Phases 0 à 4 terminées** — atelier agentique, squelette bilingue,
-> contenus réels (3 fiches projet), blog (routage par langue, brouillons exclus
+> **Statut : Phases 0 à 4 terminées** — atelier agentique, squelette Astro,
+> contenus réels (3 fiches projet), blog (routage par slug, brouillons exclus
 > du build) et CI multi-arch publiant l'image sur GHCR. Reste la Phase 5
 > (qualité & lancement). Voir la table d'état de `docs/spec.md`.
 

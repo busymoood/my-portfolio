@@ -1,12 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NotFound from '../components/NotFound.astro';
-import { useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 
-const lang: Lang = 'en';
-const t = useTranslations(lang);
+const t = useTranslations();
 ---
 
-<BaseLayout lang={lang} title={t('notfound.title')} description={t('notfound.body')}>
-  <NotFound lang={lang} />
+<BaseLayout title={t('notfound.title')} description={t('notfound.body')}>
+  <NotFound />
 </BaseLayout>

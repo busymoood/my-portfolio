@@ -1,7 +1,7 @@
 ---
 title: "Relic Hardware Guide"
 summary: "Beginner guide to using the Relic device, from flashing to physical share hygiene."
-status: "actif"
+status: "active"
 period: "Aug – Sep 2026"
 languages: ["Python"]
 repo: "https://github.com/ficaud/relic-hw"

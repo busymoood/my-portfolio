@@ -1,27 +1,26 @@
 ---
 import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import { localizePath, useTranslations, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/ui';
 import { formatDate } from '../lib/dates';
 import Breadcrumb from './Breadcrumb.astro';
 
 interface Props {
-  lang: Lang;
   post: CollectionEntry<'blog'>;
 }
 
-const { lang, post } = Astro.props;
-const t = useTranslations(lang);
+const { post } = Astro.props;
+const t = useTranslations();
 const { Content } = await render(post);
 ---
 
-<Breadcrumb lang={lang} items={[{ label: t('blog.back'), href: '/blog' }, { label: post.data.title }]} />
+<Breadcrumb items={[{ label: t('blog.back'), href: '/blog' }, { label: post.data.title }]} />
 
 <div class="container">
   <header class="post-header">
     <h1>{post.data.title}</h1>
     <p class="post-header__meta mono">
-      <span>{formatDate(post.data.date, lang)}</span>
+      <span>{formatDate(post.data.date)}</span>
       {post.data.tags.map((tag) => <span class="tag">#{tag}</span>)}
       {post.data.draft && <span class="tag post-header__draft">{t('blog.draft')}</span>}
     </p>
@@ -34,7 +33,7 @@ const { Content } = await render(post);
   </div>
 
   <p class="post-back mono">
-    <a href={localizePath('/blog', lang)}>← {t('blog.back')}</a>
+    <a href="/blog">← {t('blog.back')}</a>
   </p>
 </div>
 

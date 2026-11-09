@@ -1,7 +1,7 @@
 ---
 title: "OvalBot"
 summary: "Production ticket-resale watcher for TOP14 rugby, running on a Raspberry Pi."
-status: "actif"
+status: "active"
 period: "Oct – Nov 2026"
 languages: ["Rust", "TypeScript"]
 repo: "https://github.com/ficaud/Ovalbot"
