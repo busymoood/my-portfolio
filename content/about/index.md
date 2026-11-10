@@ -22,9 +22,9 @@ Since 2024 I have been an embedded software engineer at **Cogelec** (LEGRAND Gro
 
 ## Personal projects
 
-- **[Relic Core](/projects/relic-core)** — an offline ESP32 device that splits secrets with Shamir's Secret Sharing, encodes shares as QR codes, and never needs a network.
+- **[Relic Core](/projects/relic-core)** — An offline ESP32 device that splits secrets using Shamir's Secret Sharing and packages them into handy QR codes that you can share easily.
 - **[Relic Hardware Guide](/projects/relic-hw)** — a beginner-friendly guide to building and using the Relic device.
-- **[OvalBot](/projects/ovalbot)** — a Rust ticket-resale watcher running on a Raspberry Pi behind a Cloudflare tunnel.
+- **[OvalBot](/projects/ovalbot)** — a Rust ticket-resale bot watcher and notifier to get seat seeing your favourite TOP14 rugby match.
 
 ## Elsewhere
 
