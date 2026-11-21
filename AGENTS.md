@@ -11,21 +11,16 @@ jour au fil des phases — la table « État du projet » en tête fait foi).
 ## Environnement de dev
 
 Utilise le conteneur devbox : suivre `devbox-install-agents.md` (ne pas
-configurer l'environnement à la main). Image épinglée
-`ghcr.io/busymoood/dotfiles-docker:v0.6.0` · utilisateur `dev` · workspace
-`/workspace` · configs zsh/tmux/ssh (si fournies) clonées par `onstart` depuis
-`DOTFILES_REPO` (placeholder actuel :
-`git@github.com:busymoood/dotfiles-docker.git` — ce repo **n'a pas** de
-`zsh/.zshrc`/`tmux/.tmux.conf`, donc rien n'est lié) · config NeoVim/LazyVim
-clonée depuis `NVIM_CONFIG_REPO=git@github.com:Thejulfi/lazyvim-config.git` dans
-`~/.config/nvim` · état persistant dans le volume `devbox-home`
+configurer l'environnement à la main). Image
+`ghcr.io/busymoood/dotfiles-docker:main` · utilisateur `dev` · workspace
+`/workspace` · configs zsh/tmux/NeoVim **intégrées à l'image** (aucun clone ni
+repo de dotfiles au démarrage) · état persistant dans le volume `devbox-home`
 (`/home/dev/.local`) · git via l'agent SSH de l'hôte (aucune clé privée dans
 le conteneur). L'agent SSH est géré par `devbox-agent-relay` (image) ; Node 22,
 Playwright/Chromium et le reste du surplus projet sont posés par
-`scripts/devbox-bootstrap.sh` (appelé par le devcontainer et par le compose) ;
-`gh` et la CLI Docker viennent des features du devcontainer (`docker compose`
-seul ne les fournit pas). Pas de toolchain LaTeX dans le conteneur : le PDF du
-CV reste compilé en CI.
+`scripts/devbox-bootstrap.sh` (appelé par le devcontainer) ; `gh` et la CLI
+Docker viennent des features du devcontainer. Pas de toolchain LaTeX dans le
+conteneur : le PDF du CV reste compilé en CI.
 
 ## Structure du repo
 
@@ -45,14 +40,11 @@ public/pdf/                 # PDF du CV (téléchargé de la Release en CI, jama
 .opencode/                  # config OpenCode, skills (skill-creator…), commands
 .devcontainer/
   devcontainer.json        # image publiée (ne plus y construire de Dockerfile)
-.env.example               # variables du conteneur (copier en .env, gitignored)
 scripts/
-  devbox-bootstrap.sh      # playwright/chromium/node (devcontainer & compose)
-  devbox-up.sh             # charge .env puis `devcontainer up`
+  devbox-bootstrap.sh      # playwright/chromium/node (devcontainer)
   cover/                   # générateur de couvertures 16:9 (Playwright)
 latex/Makefile             # build/watch/clean latexmk
 Dockerfile nginx.conf                      # site : build + runtime
-docker-compose.yml                         # dev container local
 deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR, réseau du tunnel existant)
 ```
 
@@ -94,7 +86,7 @@ deploy/docker-compose.vps.yml              # déploiement VPS (image GHCR, rése
 ## Ce qu'un agent ne touche pas sans validation
 
 - `.github/workflows/` (CI : PDF du CV, image du site, déploiement),
-- `docker-compose.yml`, `deploy/docker-compose.vps.yml` (déploiement), `Dockerfile`, `nginx.conf`
+- `deploy/docker-compose.vps.yml` (déploiement), `Dockerfile`, `nginx.conf`
   — jeton de tunnel, secrets, configuration réseau.
 - Tout `.env` (jamais commité par ailleurs : `.gitignore`).
 - Les conventions de ce fichier — proposer les changements dans la conversation.

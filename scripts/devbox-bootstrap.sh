@@ -2,14 +2,14 @@
 # scripts/devbox-bootstrap.sh — ce que le conteneur ajoute à l'image devbox.
 #
 # L'image `ghcr.io/busymoood/dotfiles-docker` fournit zsh/tmux/nvim/opencode,
-# socat + `devbox-agent-relay` (agent SSH), et clone les configs (dotfiles +
-# LazyVim) via son `onstart`. Ce script ne gère que le surplus **propre au
-# projet** : module Python Playwright + Chromium, Node 22.
+# socat + `devbox-agent-relay` (agent SSH), avec les configs personnelles
+# intégrées. Ce script ne gère que le surplus **propre au projet** : module
+# Python Playwright + Chromium, Node 22.
 #
 # Points d'entrée :
 #   create   .devcontainer/devcontainer.json → postCreateCommand (1×/création)
 #   start    .devcontainer/devcontainer.json → postStartCommand  (chaque boot)
-#   up       docker-compose.yml → command (démarrage manuel, puis sleep)
+#   up       démarrage manuel, puis sleep
 #   doctor   diagnostic (délègue à devbox-agent-relay + état du projet)
 #
 # Idempotent : rejouable à chaque démarrage.
@@ -128,8 +128,8 @@ create() {
 # verrouillé). Voir `devbox-agent-relay doctor`.
 start() {
   devbox-agent-relay start || true
-  # `onstart` (image) : attend le socket, vérifie l'agent, clone/pull dotfiles
-  # + config NeoVim, corrige les permissions du volume.
+  # `onstart` (image) : attend le socket, vérifie l'agent, corrige les
+  # permissions du volume. Les configs sont déjà dans l'image.
   onstart --no-shell
 }
 
@@ -148,7 +148,7 @@ case "${1:-start}" in
   up)
     create
     start
-    log "Conteneur prêt — entrer avec : docker compose exec dev zsh"
+    log "Conteneur prêt — entrer avec : devcontainer exec --workspace-folder . zsh"
     exec sleep infinity
     ;;
   *)

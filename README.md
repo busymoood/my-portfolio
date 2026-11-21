@@ -16,69 +16,49 @@ Déploiement : image Docker multi-arch + **Cloudflare Tunnel** (aucun port publi
 
 ## Dev container (principal)
 
-L'environnement est l'image publiée **`ghcr.io/busymoood/dotfiles-docker:v0.6.0`**
+L'environnement est l'image publiée **`ghcr.io/busymoood/dotfiles-docker:main`**
 (multi-arch) : Ubuntu 24.04 · NeoVim + LazyVim · tmux · zsh · lazygit ·
-ripgrep/fd/fzf · opencode · jq · build-essential. Les configs zsh/tmux/ssh sont
-clonées à chaque démarrage par le bootstrap `onstart` depuis `DOTFILES_REPO` en
-**SSH** (clés via l'agent Bitwarden), et la config **NeoVim/LazyVim** depuis
-`NVIM_CONFIG_REPO` (`git@github.com:Thejulfi/lazyvim-config.git`) dans
-`~/.config/nvim`, avec `git pull` aux démarrages suivants. L'état des outils
-(plugins nvim, Mason, auth opencode, browsers Playwright) persiste dans le
-volume `devbox-home`. **Ne pas configurer l'environnement à la main** — suivre
-[`devbox-install-agents.md`](devbox-install-agents.md). Le surplus est posé par
-`scripts/devbox-bootstrap.sh` (source unique, appelée par
-`postCreateCommand`/`postStartCommand` du `.devcontainer/devcontainer.json`
-**et** par le `docker-compose.yml`) : module Playwright + Chromium, Node 22
-et **Node 22** dans le volume. Les features du devcontainer ajoutent `node`
-(idem), `gh` et la CLI Docker (features épinglées dans
-`devcontainer-lock.json`, régénéré par la CLI devcontainers).
+ripgrep/fd/fzf · opencode · jq · build-essential. Les configs zsh/tmux/NeoVim
+sont **intégrées à l'image** : aucun clone ni dépôt de dotfiles au démarrage.
+L'état des outils (plugins nvim, Mason, auth opencode, browsers Playwright)
+persiste dans le volume `devbox-home`. **Ne pas configurer l'environnement à la
+main** — suivre [`devbox-install-agents.md`](devbox-install-agents.md). Le surplus
+propre au projet est posé par `scripts/devbox-bootstrap.sh` (appelée par
+`postCreateCommand`/`postStartCommand`) : module Playwright + Chromium. Les
+features du devcontainer ajoutent `node` 22, `gh` et la CLI Docker (features
+épinglées dans `devcontainer-lock.json`, régénéré par la CLI devcontainers).
 
-**Deux points d'entrée, même image :**
-
-| | `docker compose up -d` | dev container |
-|---|---|---|
-| Outils | zsh · tmux · nvim · lazygit · opencode · Node 22 · Playwright/Chromium | idem **+ `gh` + CLI Docker** |
-| Usage | édition, `npm run dev/build/lint`, couvertures | Releases (`gh`), build de l'image du site (`docker`) |
-| Lancement | `docker compose up -d` | `./scripts/devbox-up.sh` (`devcontainer up`) |
+## Démarrage
 
 ```sh
-# 0) Variables d'environnement (jamais commitées)
-cp .env.example .env            # ajuster DOTFILES_REPO / NVIM_CONFIG_REPO
+# Démarrer le dev container (première fois : Playwright/Chromium ≈ quelques min)
+devcontainer up --workspace-folder .
 
-# 1) Démarrer (première fois : bootstrap dotfiles + LazyVim + Playwright ≈ quelques min)
-docker compose up -d            # Compose lit .env nativement
+# Entrer dedans (zsh = shell par défaut ; flux normal : tmux → nvim)
+devcontainer exec --workspace-folder . zsh
 
-# ou, avec la CLI devcontainers (elle ne lit PAS .env → le wrapper exporte) :
-./scripts/devbox-up.sh
+# Serveur de dev Astro : http://localhost:4321
+devcontainer exec --workspace-folder . npm run dev
 
-# 2) Entrer dedans (zsh = shell par défaut ; flux normal : tmux → nvim)
-docker compose exec dev zsh
-
-# Serveur de dev Astro : http://localhost:4321 (port publié par le compose)
-docker compose exec dev npm run dev
-
-# Mise à jour du tooling : re-puller l'image suffit (push dans le repo
-# dotfiles ou dans le repo de config NeoVim + redémarrage pour les configs,
-# pas de rebuild)
-docker pull ghcr.io/busymoood/dotfiles-docker:v0.6.0
+# Mise à jour : re-puller l'image puis recréer le conteneur
+docker pull ghcr.io/busymoood/dotfiles-docker:main
+devcontainer up --workspace-folder . --remove-existing-container
 ```
 
-> Si vous utilisez `:latest` au lieu d'un tag épinglé, faites `docker pull`
-> avant `devcontainer up` : la CLI réutilise l'image locale même si elle est
-> périmée (symptôme : utilisateur/binaires d'une version antérieure).
+> La CLI réutilise l'image locale même si elle est périmée : faites `docker pull`
+> avant `devcontainer up` (sinon : outils d'une version antérieure).
 
 Le container démarre dans `/workspace` (le repo monté). Tu y es utilisateur
-`dev`. Git sur GitHub (et le clonage des dotfiles + de la config NeoVim)
-passe via l'agent SSH de l'hôte (Bitwarden), exposé dans le conteneur par
-`devbox-agent-relay` (helper de l'image) — aucune clé privée ne vit dans le
-container. Sur **Docker Desktop** (un socket Unix non-docker ne peut pas être
-monté), l'hôte relaie l'agent en TCP via socat (service launchd
+`dev`. Git sur GitHub passe via l'agent SSH de l'hôte (Bitwarden), exposé dans
+le conteneur par `devbox-agent-relay` (helper de l'image) — aucune clé privée ne
+vit dans le container. Sur **Docker Desktop** (un socket Unix non-docker ne peut
+pas être monté), l'hôte relaie l'agent en TCP via socat (service launchd
 `com.busymoood.socat-ssh-agent` sur 4242) et le helper recrée le socket local ;
-sur **Docker natif** (Linux/WSL2), le socket est monté directement.
-**Bitwarden doit être déverrouillé au moment du démarrage.** Sinon les clones
-des repos privés (`DOTFILES_REPO`, `NVIM_CONFIG_REPO`) sont sautés, mais le
-helper arme un rattrapage : dès que les clés apparaissent (≤10 min), il rejoue
-`onstart` tout seul. Manuellement :
+sur **Docker natif** (Linux/WSL2), le socket est monté directement. Les configs
+étant intégrées à l'image, un agent indisponible n'empêche pas le démarrage :
+seules les opérations git nécessitent un agent déverrouillé. Le helper arme un
+rattrapage : dès que les clés apparaissent (≤10 min), il rejoue `onstart` tout
+seul. Manuellement :
 
 ```sh
 # diagnostic (relais, socket, clés, configs, toolchain projet)
@@ -96,7 +76,7 @@ docker exec -it <conteneur> bash /workspace/scripts/devbox-bootstrap.sh start
 
 | Outil | Usage |
 |---|---|
-| `nvim` | NeoVim + **LazyVim** (config clonée depuis `NVIM_CONFIG_REPO` dans `~/.config/nvim`, état dans le volume `devbox-home`) |
+| `nvim` | NeoVim + **LazyVim** (config intégrée à l'image dans `~/.config/nvim`, état dans le volume `devbox-home`) |
 | `tmux` | Multiplexeur (flux normal : tmux → nvim) |
 | `lazygit` | Git TUI |
 | `opencode` | Agent IA (auth persistée dans `devbox-home`) |

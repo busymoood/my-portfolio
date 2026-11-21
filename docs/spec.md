@@ -209,11 +209,11 @@ leur équivalent anglais.
 
 **Containerisation**
 - **`Dockerfile` multi-stage** : build (Node → `astro build`) puis exécution minimale (`nginx:alpine`) servant les fichiers statiques. Image finale de quelques Mo.
-- **`docker-compose.yml`** à la racine : **dev container uniquement** (service `dev`), montages des configs hôte.
+- **`.devcontainer/devcontainer.json`** : dev container basé sur l'image devbox publiée (configs intégrées, aucun montage de configs hôte).
 - **`deploy/docker-compose.vps.yml`** : déploiement sur VPS — service `web` (image publiée sur GHCR) raccordé au **réseau Docker du tunnel Cloudflare existant** (`TUNNEL_NETWORK`), joignable via `http://portfolio-web:80`. Aucun volume, aucun build, aucun port public, aucun jeton dans cette stack.
 - **`cloudflared`** : un seul connecteur, géré **hors de cette stack** (compose Cloudflare du VPS) ; il expose le site via un public hostname. HTTPS géré au bord Cloudflare, aucun reverse proxy TLS à maintenir côté serveur.
 - **Domaine : `ficaud.xyz`** (racine) via Cloudflare DNS () ; redirection `www.` → apex à gérer côté Cloudflare.
-- **`devcontainer.json`** : Node LTS + Astro extensions éditoriales ; un coup de `docker compose up` sur la cible `dev` et le site tourne localement en mode dev.
+- **`devcontainer.json`** : image devbox + features Node LTS/`gh`/CLI Docker ; `devcontainer up --workspace-folder .` puis `npm run dev` dans le conteneur.
 
 **CI/CD (GitHub Actions)**
 - À chaque push sur `main` : lint, build de l'image **multi-arch (amd64 + arm64)** sur runners natifs, smoke test puis publication sur **GHCR** (registry GitHub, gratuit, colocalisé avec le repo, package public).
@@ -229,8 +229,9 @@ myPortfolio/               # nouveau repo (init local fait, remote à créer)
 ├── .github/workflows/
 │   ├── deploy-pdf.yml     # CI CV existante (build → Release)
 │   └── site.yml           # CI du site (Phase 4)
-├── devcontainer.json      # dérivé du .devcontainer LaTeX existant (Node en Phase 1)
-├── docker-compose.yml     # dev container local
+├── .devcontainer/
+│   └── devcontainer.json  # dev container (image devbox + features Node/gh/docker)
+
 ├── deploy/
 │   ├── docker-compose.vps.yml   # VPS : image GHCR, réseau du tunnel existant
 │   └── README.md

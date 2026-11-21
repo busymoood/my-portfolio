@@ -21,14 +21,12 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
 
 ## Environnement du container (tu y es)
 
-- **Image devbox** `ghcr.io/busymoood/dotfiles-docker:v0.4.1` : Ubuntu 24.04 +
+- **Image devbox** `ghcr.io/busymoood/dotfiles-docker:main` : Ubuntu 24.04 +
   **Node LTS 22** (feature) + Python 3 + **neovim** (dernière stable) +
   **lazygit** + **opencode** + tmux/zsh/rg/fd/fzf/jq/build-essential.
   **Pas de toolchain LaTeX** dans le conteneur : le PDF du CV est compilé en CI.
-- **Configs** : `~/.config/nvim` est cloné au démarrage depuis
-  `NVIM_CONFIG_REPO` (LazyVim de Julien, dépôt privé → agent SSH requis), avec
-  `git pull` à chaque boot. Les éventuelles configs zsh/tmux viendraient de
-  `DOTFILES_REPO` (placeholder actuel sans config → shell/tmux par défaut).
+- **Configs** : zsh/tmux/NeoVim-LazyVim sont **intégrées à l'image** : aucun
+  clone, aucun `DOTFILES_REPO` / `NVIM_CONFIG_REPO` au démarrage.
 - **Outils agent** : **CLI Docker** (socket hôte — tu peux builder l'image du
   site), **gh** (GitHub CLI : Releases du PDF, état de la CI), **jq**,
   **Playwright + Chromium** (browsers dans `~/.local/ms-playwright`, volume
@@ -36,11 +34,10 @@ Lis ceci AVANT de commencer, puis acte-toi des conventions de `AGENTS.md`
 - **Persistance** : tout l'état outillé (plugins nvim, Mason, auth opencode,
   clé Supermaven, browsers) vit dans le volume `devbox-home` monté sur
   `~/.local`. `scripts/devbox-bootstrap.sh` (playwright, chromium, Node) est
-  la source unique appelée par le devcontainer **et** le docker-compose.
-- **Variables** : `.env` (copié depuis `.env.example`, ignoré par git) porte
-  `DOTFILES_REPO` / `NVIM_CONFIG_REPO`. `docker compose` le lit nativement ;
-  pour la CLI devcontainers (qui ignore les `.env`), utiliser
-  `./scripts/devbox-up.sh`.
+  appelé par le devcontainer.
+- **Lancement** : `devcontainer up --workspace-folder .` puis
+  `devcontainer exec --workspace-folder . zsh`. Aucun fichier `.env` ni wrapper
+  n'est nécessaire (les configs sont dans l'image).
 - **Agent SSH** : géré par `devbox-agent-relay` (image) — montage direct sur
   Docker natif, relais TCP sur Docker Desktop. Si `ssh-add -l` échoue dans le
   conteneur alors que Bitwarden est déverrouillé : `devbox-agent-relay doctor`
